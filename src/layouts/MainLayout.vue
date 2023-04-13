@@ -1,44 +1,28 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
+  <q-layout view="lHh LpR lFf">
+    <!-- Be sure to play with the Layout demo on docs -->
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+    <!-- The Header -->
+    <desktop-header
+      v-if="$q.screen.gt.sm"
+      :username="username"
+      :profile-links="profileLinks"
+    />
 
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
+    <mobile-header
+      v-else
+      :profile-links="profileLinks"
+    />
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-    >
-      <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
-          Essential Links
-        </q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
+    <!-- The Footer -->
+    <mobile-footer
+      v-if="$q.screen.lt.md"
+      :links="dashboardLinks"
+      :breakpoint="550"
+    />
+
+    <!-- The Drawer -->
+    <desktop-drawer v-if="$q.screen.gt.sm" :links="dashboardLinks" />
 
     <q-page-container>
       <router-view />
@@ -47,63 +31,73 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
-
-const linksData = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-];
+import DesktopHeader from 'components/layouts/DesktopHeader'
+import MobileHeader from 'components/layouts/MobileHeader'
+import MobileFooter from 'components/layouts/MobileFooter'
+import DesktopDrawer from 'components/layouts/DesktopDrawer'
+import { attemptLogout } from 'src/utils'
 
 export default {
-  name: 'MainLayout',
+  name: 'DashboardLayout',
   components: {
-    EssentialLink
+    DesktopHeader,
+    MobileHeader,
+    MobileFooter,
+    DesktopDrawer
   },
-  data () {
-    return {
-      leftDrawerOpen: false,
-      essentialLinks: linksData
+  computed: {
+    user (){
+      return this.$store.getters['auth/getUser']
+    },
+    username () {
+      return this.user?.name
     }
+  },
+  data: () => ({
+    dashboardLinks: [
+      {
+        icon: 'dashboard',
+        label: 'Início',
+        to: { name: 'Home' }
+      },
+      {
+        icon: 'devices_other',
+        label: 'Dispositivos',
+        to: { name: 'Devices' }
+      },
+      {
+        icon: 'memory',
+        label: 'Componentes'
+      },
+      {
+        icon: 'list_alt',
+        label: 'Empréstimos'
+      },
+      {
+        icon: 'groups',
+        label: 'Usuários'
+      },
+      {
+        icon: 'qr_code',
+        label: 'QR Code',
+        to: { name: 'QRCode'}
+      }
+    ],
+    profileLinks: [
+      {
+        icon: 'settings',
+        label: 'Configurações'
+      },
+      {
+        icon: 'logout',
+        label: 'Sair',
+        onClick: attemptLogout
+      }
+    ],
+    profilePic: null
+  }),
+  created () {
+    console.log(this.username)
   }
 }
 </script>
