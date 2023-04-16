@@ -3,6 +3,7 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/BlankLayout.vue'),
+    meta: { visitantOnly: true },
     children: [
       {
         name: 'Login',

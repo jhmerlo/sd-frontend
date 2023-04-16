@@ -50,6 +50,10 @@ export default function ({ store }) {
         return next({ name: 'Login' })
       }
       return next()
+    } else if (user) {
+      if (to.matched.some(route => route.meta.visitantOnly)) {
+        return next({ name: 'Home' })
+      }
     }
 
     return next()

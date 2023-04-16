@@ -4,7 +4,7 @@
       :dense="!hideLabels"
       :breakpoint="0"
       align="justify"
-      class="bg-primary text-secondary"
+      class="bg-primary text-white"
       active-color="warning"
     >
       <q-route-tab
@@ -16,7 +16,11 @@
         :class="['full-width-flex', hideLabels && 'q-pa-none']"
         :exact="link.name === 'home'"
         no-caps
-      />
+      >
+        <q-tooltip v-if="$q.screen.xs">
+          {{ link.label }}
+        </q-tooltip>
+      </q-route-tab>
     </q-tabs>
   </q-footer>
 </template>
