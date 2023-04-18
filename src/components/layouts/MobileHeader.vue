@@ -5,7 +5,7 @@
         class="text-subtitle2 items-center row no-wrap text-uppercase text-white"
       >
         <div class="ellipsis">
-          {{ $q.screen.xs ? 'SD' : 'Programa Solidariedade Digital' }}
+          {{ $q.screen.xs ? 'Solidariedade Digital' : 'Programa Solidariedade Digital' }}
         </div>
       </q-toolbar-title>
       <div>

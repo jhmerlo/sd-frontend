@@ -3,11 +3,8 @@
     <div class="row q-pa-sm q-col-gutter-sm">
       
       <div class="col-12">
-        <div class="text-h5 text-primary text-weight-bold q-my-md">
+        <div class="text-h5 text-primary text-weight-bold q-mx-sm q-my-md">
           <q-icon name="computer" size="lg" class="q-mr-sm" /> Computadores
-          <div class="text-caption">
-            Lista de todos os computadores por etapa de manutenção.
-          </div>
         </div>
         <q-expansion-item
           v-model="expanded"
@@ -15,31 +12,60 @@
           style="border-radius: 4px"
           icon="search"
           label="Filtros"
-          caption="John Doe"
+          header-class="text-h6 text-primary text-weight-light"
         >
           <q-card>
             <q-card-section class="q-pt-sm">
               <q-form @submit.prevent="getComputers">
                 <div class="row q-col-gutter-md">
-                  <div class="col-4">
-                    <q-select
-                      @filter="filterFn"
-                      v-model="filters.current_step" 
-                      :options="stepOptions" 
+                  <div class="col-md-4 col-sm-6 col-xs-12">
+                    <filterable-select
                       label="Etapa"
-                      emit-value
-                      map-options
+                      v-model="filters.current_step"
+                      :options="stepOptions"
+                    />
+                  </div>
+                  <div class="col-md-4 col-sm-6 col-xs-12">
+                    <filterable-select
+                      label="Tipo"
+                      v-model="filters.type" 
+                      :options="typeOptions" 
+                    />
+                  </div>
+                  <div class="col-md-4 col-sm-6 col-xs-12">
+                    <q-input
+                      label="Fabricante"
+                      v-model="filters.manufacturer" 
                       outlined
                       dense
-                      use-input
+                    />
+                  </div>
+                  <div class="col-md-4 col-sm-6 col-xs-12">
+                    <q-input
+                      label="Patrimônio"
+                      v-model="filters.patrimony" 
+                      outlined
+                      dense
+                    />
+                  </div>
+                  <div class="col-md-4 col-sm-6 col-xs-12">
+                    <filterable-select
+                      label="Responsável"
+                      v-model="filters.current_step_responsible_id" 
+                      :options="userOptions" 
+                    />
+                  </div>
+                  <div class="col-md-4 col-sm-6 col-xs-12">
+                    <computer-input
+                      label="Identificador"
+                      v-model="filters.id"
                     />
                   </div>
                 </div>
-                
-                <div class="col-12 text-right">
+                <div class="col-12 q-mt-sm text-right">
                   <q-btn
+                    @click="clearFilters"
                     class="q-ma-xs"
-                    type="submit"
                     label="Limpar"
                     color="primary"
                     flat
@@ -48,7 +74,7 @@
                     class="q-ma-xs"
                     type="submit"
                     label="Filtrar"
-                    color="primary"
+                    color="secondary"
                   />
                 </div>
               </q-form>
@@ -87,22 +113,43 @@
 import { stepOptions } from 'src/utils/constants'
 import ComputerCard from 'components/ComputerCard.vue'
 import ComputerCardSkeleton from 'components/skeletons/ComputerCardSkeleton'
+import FilterableSelect from 'components/FilterableSelect'
+import ComputerInput from 'components/ComputerInput'
 
 export default {
   name: 'Devices',
   components: {
     ComputerCard,
-    ComputerCardSkeleton
+    ComputerCardSkeleton,
+    FilterableSelect,
+    ComputerInput
   },
   data: () => ({
     page: 1,
     lastPage: 1,
     computers: [],
     loading: false,
+    userOptionsLoading: false,
     stepOptions: [...stepOptions],
+    typeOptions: [
+      {
+        label: 'Desktop',
+        value: 'desktop'
+      },
+      {
+        label: 'Notebook',
+        value: 'notebook'
+      }
+    ],
     filters: {
-      current_step: ''
+      current_step: '',
+      type: '',
+      manufacturer: '',
+      patrimony: '',
+      current_step_responsible_id: '',
+      id: ''
     },
+    userOptions: [],
     expanded: false
   }),
   methods: {
@@ -111,39 +158,36 @@ export default {
       const { data } = await this.$axios.get('computers', { 
         params: { 
           page: this.page,
-          current_step: this.filters.current_step
-        
+          ...this.filters
         }
       });
       this.computers = data.data
       this.lastPage = data.last_page
       this.loading = false
     },
+    async getUserOptions () {
+      this.userOptionsLoading = true
+      const { data } = await this.$axios.get('user-select-options-index')
+
+      this.userOptions = data.users
+      this.userOptionsLoading = false
+    },
     refresh () {
       this.page = 1
       this.getComputers()
     },
-    filterFn (val, update) {
-      if (val === '') {
-        update(() => {
-          this.stepOptions = [...stepOptions]
-        })
-        return
-      }
-
-      update(() => {
-        const needle = val.toLowerCase()
-        this.stepOptions = stepOptions.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
-      })
-    },
     clearFilters () {
       this.filters = {
-        current_step: ''
+        current_step: '',
+        type: ''
       }
+
+      this.getComputers()
     }
   },
   created () {
     this.getComputers()
+    this.getUserOptions()
   }
 }
 </script>

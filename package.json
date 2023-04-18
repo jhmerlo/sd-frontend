@@ -20,12 +20,13 @@
     "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
+    "@quasar/app": "^2.0.0",
+    "@quasar/quasar-app-extension-dotenv": "^1.1.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^7.21.0",
-    "eslint-webpack-plugin": "^2.4.0",
-    "eslint-plugin-vue": "^7.7.0",
     "eslint-config-prettier": "^8.1.0",
-    "@quasar/app": "^2.0.0"
+    "eslint-plugin-vue": "^7.7.0",
+    "eslint-webpack-plugin": "^2.4.0"
   },
   "browserslist": [
     "last 10 Chrome versions",

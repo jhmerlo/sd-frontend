@@ -22,7 +22,7 @@ export default function (/* { ssrContext } */) {
     plugins: [
       createPersistedState({
         paths: ['auth.user'],
-        key: 'sd-store'
+        key: process.env.STORAGE_KEY
       })
     ],
     // enable strict mode (adds overhead!)

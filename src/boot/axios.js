@@ -5,7 +5,7 @@ import { handleErrors } from 'src/utils/api'
 export default ({ Vue, router, store }) => {
   Vue.prototype.$axios = axios.create({
     credentials: true,
-    baseURL: 'http://localhost/api/',
+    baseURL: process.env.API_URL,
     timeout: 180000,
     headers: {
       'X-Requested-With': 'XMLHttpRequest',

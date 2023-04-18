@@ -2,7 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 
 export async function attemptLogin ({ commit }, userCredentials) {
-  await axios.get('http://localhost:80/sanctum/csrf-cookie')
+  await axios.get(process.env.BASE_URL + 'sanctum/csrf-cookie')
   const { data } = await Vue.prototype.$axios.post('login', userCredentials)
 
   localStorage.setItem('access_token', data.access_token)
