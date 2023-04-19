@@ -3,7 +3,7 @@ const routes = [
   {
     path: '/',
     component: () => import('layouts/BlankLayout.vue'),
-    meta: { visitantOnly: true },
+    meta: { guestOnly: true },
     children: [
       {
         name: 'Login',
@@ -12,36 +12,42 @@ const routes = [
       },
       {
         name: 'SignUp',
-        path: '/cadastro',
+        path: 'cadastro',
         component: () => import('pages/SignUp.vue')
       },
       {
         name: 'VerifyEmail',
-        path: '/verificar-email/:id/:hash',
+        path: 'verificar-email/:id/:hash',
         props: true,
         component: () => import('pages/VerifyEmail.vue')
       }
     ]
   },
   {
-    path: '/dashboard',
+    path: '/painel',
     component: () => import('layouts/MainLayout.vue'),
     meta: { authOnly: true },
     children: [
       { 
         name: 'Home',
-        path: '/inicio',
+        path: 'inicio',
         component: () => import('pages/Index.vue') 
       },
       { 
         name: 'Devices',
-        path: '/dispositivos',
+        path: 'dispositivos',
         component: () => import('pages/Devices.vue') 
       },
       { 
         name: 'QRCode',
-        path: '/qrcode',
+        path: 'qrcode',
         component: () => import('pages/QRCodeReader.vue') 
+      },
+      {
+        name: 'Maintenance',
+        path: 'manutencao/:id',
+        component: () => import('pages/Maintenance.vue'),
+        props: true
       }
     ]
   },

@@ -51,7 +51,7 @@ export default function ({ store }) {
       }
       return next()
     } else if (user) {
-      if (to.matched.some(route => route.meta.visitantOnly)) {
+      if (to.matched.some(route => route.meta.guestOnly)) {
         return next({ name: 'Home' })
       }
     }

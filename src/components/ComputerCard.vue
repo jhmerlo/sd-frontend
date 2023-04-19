@@ -79,6 +79,7 @@
         </q-tooltip>
       </q-btn>
       <q-btn
+        :to="{ name: 'Maintenance', params: { id: computer.id } }"
         color="primary"
         icon="build"
         round
