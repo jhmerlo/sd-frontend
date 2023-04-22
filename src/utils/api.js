@@ -74,11 +74,23 @@ export const handleErrors = async (
       })
     },
     400: data => {
-      const errors = Object.values(data.errors).flat()
-      Vue.prototype.$q.notify({
-        type: 'alert',
-        message: errors.shift()
-      })
+      if (data.errors) {
+        const errors = Object.values(data.errors).flat()
+        Vue.prototype.$q.notify({
+          type: 'alert',
+          message: errors.shift()
+        })
+      } else if (data.message) {
+        Vue.prototype.$q.notify({
+          type: 'alert',
+          message: data.message
+        })
+      } else {
+        Vue.prototype.$q.notify({
+          type: 'alert',
+          message: 'Problema na requisição.'
+        })
+      }
     },
     429: (/* data */) => {
       Vue.prototype.$q.notify({

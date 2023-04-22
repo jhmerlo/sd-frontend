@@ -10,10 +10,11 @@
 
       <div class="col-12">
         <q-stepper
-          v-model="computer.current_step"
+          v-model="step"
           :vertical="$q.screen.lt.md"
           ref="stepper"
           color="primary"
+          header-nav
           animated
         >
           <q-step
@@ -25,16 +26,22 @@
             :done-icon="maintenanceIcons[step.value]"
             :active-icon="maintenanceIcons[step.value]"
             :done="computer.current_step > step.value"
+            :header-nav="computer.current_step >= step.value"
             done-color="secondary"
           >
             <q-form ref="stepForm" @submit="test">
-              <component v-model="computer" :is="currentComponent" />
+              <component @refresh="showComputer" v-model="computer" :is="currentComponent" />
             </q-form>
           </q-step>
   
           <template v-slot:navigation>
             <q-stepper-navigation class="row justify-end">
-              <q-btn @click="() => $refs.stepForm[0].submit()" color="primary" :label="computer.current_step === 4 ? 'Finish' : 'Continuar'" />
+              <q-btn 
+                @click="() => $refs.stepForm[0].submit()" 
+                :disable="computer.current_step != step" 
+                :label="computer.current_step === 4 ? 'Finish' : 'Continuar'" 
+                color="primary" 
+              />
               <q-btn v-if="computer.current_step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
             </q-stepper-navigation>
           </template>
@@ -47,14 +54,17 @@
 <script>
 import { stepOptions, maintenanceIcons } from 'src/utils/constants'
 import Step1 from 'components/maintenanceSteps/Step1'
+import Step2 from 'components/maintenanceSteps/Step2'
 
 export default {
   name: 'Maintenance',
   props: ['id'],
   components: {
-    Step1
+    Step1,
+    Step2
   },
   data: () => ({
+    step: null,
     computer: {},
     stepOptions: [ ...stepOptions ],
     maintenanceIcons: { ...maintenanceIcons }
@@ -65,6 +75,7 @@ export default {
       try {
         const { data } = await this.$axios.get('computer/' + this.id)
         this.computer = data.computer
+        this.step = this.computer.current_step
       } catch {
         this.$router.push({ name: 'Computers' })
       } finally {
@@ -75,16 +86,18 @@ export default {
       const { data } = await this.$axios.put('computer/' + this.computer.id + '/' + this.currentApiPath, {
         ...this.computer
       })
+
       this.$q.notify({
         message: data.message,
         type: 'positive'
       })
-      console.log(this.computer)
+
+      this.showComputer()
     }
   },
   computed: {
     currentComponent () {
-      return 'Step' + this.computer.current_step
+      return 'Step' + this.step
     },
     currentApiPath () {
       switch (this.computer.current_step) {

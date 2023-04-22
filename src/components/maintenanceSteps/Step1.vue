@@ -11,6 +11,7 @@
       label="Descrição *"
       v-model="val.description"
       :rules="[required]"
+      :disable="val.current_step != 1"
       lazy-rules
       hide-bottom-space
       outlined
@@ -22,6 +23,7 @@
         label="Fabricante *"
         v-model="val.manufacturer"
         :rules="[required]"
+        :disable="val.current_step != 1"
         lazy-rules
         hide-bottom-space
         outlined
@@ -33,6 +35,7 @@
         v-model="val.type"
         label="Tipo"
         :options="typeOptions"
+        :disable="val.current_step != 1"
         use-input
         map-options
         emit-value
@@ -45,6 +48,7 @@
       <q-input
         label="Sistema Operacional"
         v-model="val.operational_system"
+        :disable="val.current_step != 1"
         lazy-rules
         outlined
         dense
@@ -54,6 +58,7 @@
       <q-input
         label="Patrimônio UFES"
         v-model="val.patrimony"
+        :disable="val.current_step != 1"
         lazy-rules
         outlined
         dense
@@ -62,6 +67,7 @@
     <div class="col-md-12 q-mt-xs">
       <q-toggle
         v-model="val.sanitized"
+        :disable="val.current_step != 1"
         icon="cleaning_services"
         size="lg"
         color="secondary"
@@ -72,6 +78,7 @@
     <div class="col-12 q-pt-none">
       <q-toggle
         v-model="val.functional"
+        :disable="val.current_step != 1"
         icon="power_settings_new"
         size="lg"
         color="secondary"
