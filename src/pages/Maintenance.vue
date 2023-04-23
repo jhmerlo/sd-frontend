@@ -1,6 +1,6 @@
 <template>
   <q-page class="bg-grey-2">
-    <div class="row q-pa-sm q-col-gutter-sm">
+    <div class="row justify-center q-pa-sm q-col-gutter-sm">
       
       <div class="col-12">
         <div class="text-h5 text-primary text-weight-bold q-mx-sm q-my-md">
@@ -9,7 +9,7 @@
       </div>
 
       <div class="col-12">
-        <q-stepper
+        <q-stepper  
           v-model="step"
           :vertical="$q.screen.lt.md"
           ref="stepper"

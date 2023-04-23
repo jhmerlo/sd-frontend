@@ -120,6 +120,15 @@
                 <div class="col-12">
                   <b>Modelo:</b> {{  val.processor.model }}
                 </div>
+                <div v-if="val.processor.clock" class="col-12">
+                  <b>Clock:</b> {{  val.processor.clock + ' GHz' }}
+                </div>
+                <div v-if="val.processor.threads" class="col-12">
+                  <b>Threads:</b> {{  val.processor.threads }}
+                </div>
+                <div v-if="val.processor.cache" class="col-12">
+                  <b>Cache:</b> {{  val.processor.cache + ' MB' }}
+                </div>
                 <div class="col-12">
                   <q-icon
                     :name="val.processor.functional ? 'check_circle' : 'cancel'" 
@@ -150,6 +159,90 @@
             </q-card-section>
           </q-card>
         </q-expansion-item>
+
+        <!-- Ram Memory -->
+        <q-expansion-item
+          expand-separator
+          icon="memory"
+          label="Memória RAM"
+          :header-class="
+            functionalMemoryRam.includes('Não') ? 
+            'text-negative text-weight-medium' : 
+            'text-secondary text-weight-medium'
+          "
+          :caption="functionalMemoryRam"
+        >
+          <q-card>
+            <q-card-section class="q-pb-none">
+              <div v-for="ramMemory in val.ram_memories" :key="ramMemory.id" >
+                <div class="row col-12 text-body2 q-col-gutter-y-sm text-grey-9">
+                  <div class="col-12">
+                    <b>Fabricante:</b> {{  ramMemory.manufacturer }}
+                  </div>
+                  <div class="col-12">
+                    <b>Modelo:</b> {{  ramMemory.model }}
+                  </div>
+                  <div class="col-12">
+                    <b>Clock:</b> {{  ramMemory.clock + ' MHz' }}
+                  </div>
+                  <div class="col-12">
+                    <b>Capacidade:</b> {{  ramMemory.size + 'GB' }}
+                  </div>
+                  <div class="col-12">
+                    <b>Tecnologia:</b> {{  ramMemory.technology }}
+                  </div>
+                  <div class="col-12">
+                    <q-icon
+                      :name="ramMemory.functional ? 'check_circle' : 'cancel'" 
+                      :color="ramMemory.functional ? 'positive' : 'negative'" 
+                      size="xs"  
+                    />
+                    {{ ramMemory.functional ? 'Funcional' : 'Não Funcional' }}
+                  </div>
+                </div>
+
+                <q-card-actions align="right">
+                  <q-btn
+                    @click="showRamMemoryDialog('edit', ramMemory)"
+                    label="Editar"
+                    icon="edit"
+                    color="primary"
+                    flat
+                  />
+
+                  <q-btn
+                    @click="removeRamMemory(ramMemory)"
+                    label="Remover"
+                    icon="delete"
+                    color="negative"
+                    flat
+                  />
+                </q-card-actions>
+
+                <q-separator class="q-my-lg" />
+              </div>
+            </q-card-section>
+            <q-card-actions align="center">
+              <q-btn
+                @click="showRamMemorySearchDialog"
+                class="q-pa-xs"
+                label="Pesquisar"
+                icon="search"
+                color="primary"
+                stack
+                outline
+              />
+              <q-btn
+                @click="showRamMemoryDialog('create')"
+                class="q-pa-xs"
+                label="Adicionar"
+                icon="add"
+                color="primary"
+                stack
+              />
+            </q-card-actions>
+          </q-card>
+        </q-expansion-item>
       </q-list>
     </div>
   </div>
@@ -158,6 +251,12 @@
 <script>
 import MotherboardSearchDialog from 'components/dialogs/MotherboardSearchDialog'
 import MotherboardDialog from 'components/dialogs/MotherboardDialog'
+import ProcessorSearchDialog from 'components/dialogs/ProcessorSearchDialog'
+import ProcessorDialog from 'components/dialogs/ProcessorDialog'
+import RamMemorySearchDialog from 'components/dialogs/RamMemorySearchDialog'
+import RamMemoryDialog from 'components/dialogs/RamMemoryDialog'
+
+
 import { required } from 'src/utils/rules'
 
 export default {
@@ -228,7 +327,103 @@ export default {
 
         this.val.motherboard = null
       })
-    }
+    },
+    showProcessorSearchDialog () {
+      this.$q.dialog({
+        component: ProcessorSearchDialog,
+        computer_id: this.val.id
+      }).onOk(() => {
+        this.$emit('refresh')
+      })
+    },
+    showProcessorDialog (mode) {
+      if (mode == 'edit') {
+        this.$q.dialog({
+          component: ProcessorDialog,
+          processor: this.val.processor 
+        }).onOk(() => {
+          this.$emit('refresh')
+        })
+      } else {
+        this.$q.dialog({
+          component: ProcessorDialog,
+          computer_id: this.val.id
+        }).onOk(() => {
+          this.$emit('refresh')
+        })
+      }
+    },
+    removeProcessor () {
+      this.$q.dialog({
+        title: 'Remover Processador',
+        message: 'Você tem certeza que deseja remover este processador deste computador?',
+        ok: {
+          label: 'Remover',
+          color: 'primary'
+        },
+        cancel: {
+          flat: true,
+          label: 'Cancelar'
+        }
+      }).onOk(async () => {
+        const { data } = await this.$axios.put('processor/' + this.val.processor.id, { ...this.val.processor, computer_id: null })
+        this.$q.notify({
+          message: data.message,
+          type: 'positive'
+        })
+
+        this.val.processor = null
+      })
+    },
+    showRamMemorySearchDialog () {
+      this.$q.dialog({
+        component: RamMemorySearchDialog,
+        computer_id: this.val.id
+      }).onOk(() => {
+        this.$emit('refresh')
+      })
+    },
+    showRamMemoryDialog (mode, ramMemory) {
+      if (mode == 'edit') {
+        this.$q.dialog({
+          component: RamMemoryDialog,
+          ramMemory
+        }).onOk(() => {
+          this.$emit('refresh')
+        })
+      } else {
+        this.$q.dialog({
+          component: RamMemoryDialog,
+          computer_id: this.val.id
+        }).onOk(() => {
+          this.$emit('refresh')
+        })
+      }
+    },
+    removeRamMemory (ramMemory) {
+      this.$q.dialog({
+        title: 'Remover Memória RAM',
+        message: 'Você tem certeza que deseja remover esta memória RAM deste computador?',
+        ok: {
+          label: 'Remover',
+          color: 'primary'
+        },
+        cancel: {
+          flat: true,
+          label: 'Cancelar'
+        }
+      }).onOk(async () => {
+        const { data } = await this.$axios.put('ram-memory/' + ramMemory.id, { ...ramMemory, computer_id: null })
+        
+        this.$q.notify({
+          message: data.message,
+          type: 'positive'
+        })
+
+        const index = this.val.ram_memories.indexOf(ramMemory)
+        if (index > -1) this.val.ram_memories.splice(index, 1)
+      })
+    },
   },
   computed: {
     val: {
@@ -248,6 +443,12 @@ export default {
       if (!this.val.processor) return 'Não disponível'
 
       return this.val.processor.functional ? 'Funcional' : 'Não funcional'
+    },
+    functionalMemoryRam () {
+      if (!this.val.ram_memories) return 'Não disponível'
+
+      const arr = this.val.ram_memories.filter(itm => itm.functional == true)
+      return arr.length > 0 ? 'Funcional' : 'Não funcional'
     }
   }
 }
