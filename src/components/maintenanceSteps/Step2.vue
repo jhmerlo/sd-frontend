@@ -243,6 +243,90 @@
             </q-card-actions>
           </q-card>
         </q-expansion-item>
+
+        <!-- Storage Device -->
+        <q-expansion-item
+          expand-separator
+          icon="storage"
+          label="Dispositivo de Armazenamento"
+          :header-class="
+            functionalStorageDevice.includes('Não') ? 
+            'text-negative text-weight-medium' : 
+            'text-secondary text-weight-medium'
+          "
+          :caption="functionalStorageDevice"
+        >
+          <q-card>
+            <q-card-section class="q-pb-none">
+              <div v-for="storageDevice in val.storage_devices" :key="storageDevice.id" >
+                <div class="row col-12 text-body2 q-col-gutter-y-sm text-grey-9">
+                  <div class="col-12">
+                    <b>Fabricante:</b> {{  storageDevice.manufacturer }}
+                  </div>
+                  <div class="col-12">
+                    <b>Modelo:</b> {{  storageDevice.model }}
+                  </div>
+                  <div class="col-12">
+                    <b>Tipo:</b> {{  storageDevice.type }}
+                  </div>
+                  <div class="col-12">
+                    <b>Capacidade:</b> {{  storageDevice.size + 'GB' }}
+                  </div>
+                  <div class="col-12">
+                    <b>Tecnologia:</b> {{  storageDevice.connection_technology }}
+                  </div>
+                  <div class="col-12">
+                    <q-icon
+                      :name="storageDevice.functional ? 'check_circle' : 'cancel'" 
+                      :color="storageDevice.functional ? 'positive' : 'negative'" 
+                      size="xs"  
+                    />
+                    {{ storageDevice.functional ? 'Funcional' : 'Não Funcional' }}
+                  </div>
+                </div>
+
+                <q-card-actions align="right">
+                  <q-btn
+                    @click="showStorageDeviceDialog('edit', storageDevice)"
+                    label="Editar"
+                    icon="edit"
+                    color="primary"
+                    flat
+                  />
+
+                  <q-btn
+                    @click="removeStorageDevice(storageDevice)"
+                    label="Remover"
+                    icon="delete"
+                    color="negative"
+                    flat
+                  />
+                </q-card-actions>
+
+                <q-separator class="q-my-lg" />
+              </div>
+            </q-card-section>
+            <q-card-actions align="center">
+              <q-btn
+                @click="showStorageDeviceSearchDialog"
+                class="q-pa-xs"
+                label="Pesquisar"
+                icon="search"
+                color="primary"
+                stack
+                outline
+              />
+              <q-btn
+                @click="showStorageDeviceDialog('create')"
+                class="q-pa-xs"
+                label="Adicionar"
+                icon="add"
+                color="primary"
+                stack
+              />
+            </q-card-actions>
+          </q-card>
+        </q-expansion-item>
       </q-list>
     </div>
   </div>
@@ -255,9 +339,8 @@ import ProcessorSearchDialog from 'components/dialogs/ProcessorSearchDialog'
 import ProcessorDialog from 'components/dialogs/ProcessorDialog'
 import RamMemorySearchDialog from 'components/dialogs/RamMemorySearchDialog'
 import RamMemoryDialog from 'components/dialogs/RamMemoryDialog'
-
-
-import { required } from 'src/utils/rules'
+import StorageDeviceSearchDialog from 'components/dialogs/StorageDeviceSearchDialog'
+import StorageDeviceDialog from 'components/dialogs/StorageDeviceDialog'
 
 export default {
   name: 'Step2',
@@ -267,20 +350,7 @@ export default {
       required: true
     }
   },
-  data: () => ({
-    components: {
-      motherboard: {
-        search: '',
-        toggle: 1
-      },
-      processor: {
-        search: '',
-        toggle: 1
-      }
-    }
-  }),
   methods: {
-    required,
     showMotherboardSearchDialog () {
       this.$q.dialog({
         component: MotherboardSearchDialog,
@@ -424,6 +494,55 @@ export default {
         if (index > -1) this.val.ram_memories.splice(index, 1)
       })
     },
+    showStorageDeviceSearchDialog () {
+      this.$q.dialog({
+        component: StorageDeviceSearchDialog,
+        computer_id: this.val.id
+      }).onOk(() => {
+        this.$emit('refresh')
+      })
+    },
+    showStorageDeviceDialog (mode, storageDevice) {
+      if (mode == 'edit') {
+        this.$q.dialog({
+          component: StorageDeviceDialog,
+          storageDevice
+        }).onOk(() => {
+          this.$emit('refresh')
+        })
+      } else {
+        this.$q.dialog({
+          component: StorageDeviceDialog,
+          computer_id: this.val.id
+        }).onOk(() => {
+          this.$emit('refresh')
+        })
+      }
+    },
+    removeStorageDevice (storageDevice) {
+      this.$q.dialog({
+        title: 'Remover Dispositivo de Armazenamento',
+        message: 'Você tem certeza que deseja remover este dispositivo de armazenamento deste computador?',
+        ok: {
+          label: 'Remover',
+          color: 'primary'
+        },
+        cancel: {
+          flat: true,
+          label: 'Cancelar'
+        }
+      }).onOk(async () => {
+        const { data } = await this.$axios.put('storage-device/' + storageDevice.id, { ...storageDevice, computer_id: null })
+        
+        this.$q.notify({
+          message: data.message,
+          type: 'positive'
+        })
+
+        const index = this.val.storage_devices.indexOf(storageDevice)
+        if (index > -1) this.val.storage_devices.splice(index, 1)
+      })
+    },
   },
   computed: {
     val: {
@@ -445,17 +564,17 @@ export default {
       return this.val.processor.functional ? 'Funcional' : 'Não funcional'
     },
     functionalMemoryRam () {
-      if (!this.val.ram_memories) return 'Não disponível'
+      if (this.val.ram_memories.length == 0) return 'Não disponível'
 
       const arr = this.val.ram_memories.filter(itm => itm.functional == true)
+      return arr.length > 0 ? 'Funcional' : 'Não funcional'
+    },
+    functionalStorageDevice () {
+      if (this.val.storage_devices.length == 0) return 'Não disponível'
+
+      const arr = this.val.storage_devices.filter(itm => itm.functional == true)
       return arr.length > 0 ? 'Funcional' : 'Não funcional'
     }
   }
 }
 </script>
-
-<style lang="scss">
-.toggle-button {
-  border: 1px solid $primary;
-}
-</style>
