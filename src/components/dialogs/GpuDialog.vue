@@ -2,8 +2,8 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card style="width: 500px" class="bg-white">
       <q-card-section class="text-h6 text-primary q-pb-none">
-        <q-icon name="hub" class="q-mr-sm" />
-        {{ this.mode == 'edit' ? 'Editar ' : 'Criar ' }} Placa-Mãe
+        <q-icon name="extension" class="q-mr-sm" />
+        {{ this.mode == 'edit' ? 'Editar ' : 'Criar ' }} GPU
       </q-card-section>
       <q-card-section class="text-grey-8 text-h6 q-mb-sm">
         <q-form @submit="handleSubmit" class="row q-col-gutter-md">
@@ -34,6 +34,42 @@
             />
           </div>
           <div class="col-12">
+            <q-input
+              v-model.number="obj.clock"
+              :rules="[required]"
+              hide-bottom-space
+              label="Clock (MHz) *"
+              mask="#.#"
+              fill-mask="0"
+              reverse-fill-mask
+              outlined
+              dense
+            />
+          </div>
+          <div class="col-12">
+            <q-input
+              v-model.number="obj.size"
+              :rules="[required]"
+              hide-bottom-space
+              label="Capacidade (GB) *"
+              mask="#.#"
+              reverse-fill-mask
+              outlined
+              dense
+            />
+          </div>
+          <div class="col-12">
+            <q-toggle
+              v-model="obj.integrated"
+              class="text-grey-9 text-body2"
+              :icon="obj.integrated ? 'group_work' : 'offline_bolt'"
+              :label="obj.integrated ? 'Integrada' : 'Dedicada'"
+              size="lg"
+              color="primary"
+              keep-color
+            />
+          </div>
+          <div class="col-12 q-pt-none">
             <q-toggle
               v-model="obj.functional"
               class="text-grey-9 text-body2"
@@ -69,8 +105,8 @@ import ComputerInput from 'components/ComputerInput'
 import { required } from 'src/utils/rules'
 
 export default {
-  name: 'MotherboardDialog',
-  props: ['motherboard', 'computer_id'],
+  name: 'GpuDialog',
+  props: ['gpu', 'computer_id'],
   components: {
     ComputerInput
   },
@@ -80,7 +116,10 @@ export default {
       computer_id: '',
       manufacturer: '',
       model: '',
-      functional: false
+      functional: false,
+      clock: '',
+      size: '',
+      integrated: false
     },
     loading: false
   }),
@@ -104,13 +143,13 @@ export default {
     },
     async handleSubmit () {
       if (this.mode == 'edit') {
-        const { data } = await this.$axios.put('motherboard/' + this.obj.id, { ...this.obj })
+        const { data } = await this.$axios.put('gpu/' + this.obj.id, { ...this.obj })
         this.$q.notify({
           message: data.message,
           type: 'positive'
         })
       } else {
-        const { data } = await this.$axios.post('motherboard', { ...this.obj })
+        const { data } = await this.$axios.post('gpu', { ...this.obj })
         this.$q.notify({
           message: data.message,
           type: 'positive'
@@ -120,8 +159,8 @@ export default {
     }
   },
   mounted () {
-    if (this.motherboard) {
-      this.obj = { ...this.motherboard }
+    if (this.gpu) {
+      this.obj = { ...this.gpu }
       this.mode = 'edit'
     } else {
       this.mode = 'create'

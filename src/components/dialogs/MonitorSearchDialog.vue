@@ -2,12 +2,12 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card style="width: 500px" class="bg-white">
       <q-card-section class="text-h6 text-primary q-pb-none">
-        <q-icon name="hub" class="q-mr-sm" />
-        Pesquisar Placa-Mãe
+        <q-icon name="desktop_windows" class="q-mr-sm" />
+        Pesquisar Monitor
       </q-card-section>
       <q-card-section class="text-grey-8 text-h6 q-mb-sm">
         <div class="col-12">
-          <q-form ref="cForm" @submit="searchMotherboard">
+          <q-form ref="cForm" @submit="searchMonitor">
             <q-input
               v-model="search"
               label="Identificador"
@@ -25,24 +25,33 @@
           </q-form>
         </div>
         
-        <template v-if="motherboard">
+        <template v-if="monitor">
           <div class="row col-12 text-body2 q-col-gutter-y-sm">
-            <div v-if="motherboard.computer_id" class="col-12">
-             <b>Identificador do Computador:</b> {{  motherboard.computer_id }}
+            <div v-if="monitor.computer_id" class="col-12">
+             <b>Identificador do Computador:</b> {{  monitor.computer_id }}
             </div>
             <div class="col-12">
-             <b>Fabricante:</b> {{  motherboard.manufacturer }}
+              <b>Fabricante:</b> {{  monitor.manufacturer }}
             </div>
             <div class="col-12">
-              <b>Modelo:</b> {{  motherboard.model }}
+              <b>Modelo:</b> {{  monitor.model }}
             </div>
             <div class="col-12">
-              <q-icon 
-                :name="motherboard.functional ? 'check_circle' : 'cancel'" 
-                :color="motherboard.functional ? 'positive' : 'negative'" 
+              <b>Tamanho:</b> {{  monitor.size + '"' }}
+            </div>
+            <div class="col-12">
+              <b>Conexões:</b> {{  monitor.connections }}
+            </div>
+            <div class="col-12">
+              <b>Painel:</b> {{  monitor.panel }}
+            </div>
+            <div class="col-12">
+              <q-icon
+                :name="monitor.functional ? 'check_circle' : 'cancel'" 
+                :color="monitor.functional ? 'positive' : 'negative'" 
                 size="xs"  
               />
-              {{ motherboard.functional ? 'Funcional' : 'Não Funcional' }}
+              {{ monitor.functional ? 'Funcional' : 'Não Funcional' }}
             </div>
           </div>
 
@@ -69,11 +78,11 @@
 import { required } from 'src/utils/rules'
 
 export default {
-  name: 'MotherboardSearchDialog',
+  name: 'MonitorSearchDialog',
   props: ['computer_id'],
   data: () => ({
     search: '',
-    motherboard: null,
+    monitor: null,
     loading: false
   }),
   methods: {
@@ -92,8 +101,8 @@ export default {
       this.hide()
     },
     async confirm () {
-      await this.$axios.put('motherboard/' + this.motherboard.id, { 
-        ...this.motherboard,
+      await this.$axios.put('monitor/' + this.monitor.id, { 
+        ...this.monitor,
         computer_id: this.computer_id
       })
 
@@ -103,13 +112,15 @@ export default {
     onCancelClick () {
       this.hide()
     },
-    async searchMotherboard () {
-      this.loading = true
-      const { data } = await this.$axios.get('motherboard/' + this.search)
-
-      this.motherboard = data.motherboard
-
-      this.loading = false
+    async searchMonitor () {
+      try {
+        this.loading = true
+        const { data } = await this.$axios.get('monitor/' + this.search)
+  
+        this.monitor = data.monitor
+      } finally {
+        this.loading = false
+      }
     }
   }
 }

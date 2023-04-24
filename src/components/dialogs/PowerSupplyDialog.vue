@@ -2,8 +2,8 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card style="width: 500px" class="bg-white">
       <q-card-section class="text-h6 text-primary q-pb-none">
-        <q-icon name="hub" class="q-mr-sm" />
-        {{ this.mode == 'edit' ? 'Editar ' : 'Criar ' }} Placa-Mãe
+        <q-icon name="power" class="q-mr-sm" />
+        {{ this.mode == 'edit' ? 'Editar ' : 'Criar ' }} Fonte de Alimentação
       </q-card-section>
       <q-card-section class="text-grey-8 text-h6 q-mb-sm">
         <q-form @submit="handleSubmit" class="row q-col-gutter-md">
@@ -29,6 +29,26 @@
               label="Modelo *"
               :rules="[required]"
               hide-bottom-space
+              outlined
+              dense
+            />
+          </div>
+          <div class="col-12">
+            <q-input
+              v-model.number="obj.electric_power"
+              label="Potência (W)"
+              mask="#.#"
+              reverse-fill-mask
+              outlined
+              dense
+            />
+          </div>
+          <div class="col-12">
+            <q-input
+              v-model.number="obj.voltage"
+              label="Tensão (V)"
+              mask="#.#"
+              reverse-fill-mask
               outlined
               dense
             />
@@ -69,8 +89,8 @@ import ComputerInput from 'components/ComputerInput'
 import { required } from 'src/utils/rules'
 
 export default {
-  name: 'MotherboardDialog',
-  props: ['motherboard', 'computer_id'],
+  name: 'PowerSupplyDialog',
+  props: ['powerSupply', 'computer_id'],
   components: {
     ComputerInput
   },
@@ -80,6 +100,8 @@ export default {
       computer_id: '',
       manufacturer: '',
       model: '',
+      electric_power: '',
+      voltage: '',
       functional: false
     },
     loading: false
@@ -104,13 +126,13 @@ export default {
     },
     async handleSubmit () {
       if (this.mode == 'edit') {
-        const { data } = await this.$axios.put('motherboard/' + this.obj.id, { ...this.obj })
+        const { data } = await this.$axios.put('power-supply/' + this.obj.id, { ...this.obj })
         this.$q.notify({
           message: data.message,
           type: 'positive'
         })
       } else {
-        const { data } = await this.$axios.post('motherboard', { ...this.obj })
+        const { data } = await this.$axios.post('power-supply', { ...this.obj })
         this.$q.notify({
           message: data.message,
           type: 'positive'
@@ -120,8 +142,8 @@ export default {
     }
   },
   mounted () {
-    if (this.motherboard) {
-      this.obj = { ...this.motherboard }
+    if (this.powerSupply) {
+      this.obj = { ...this.powerSupply }
       this.mode = 'edit'
     } else {
       this.mode = 'create'

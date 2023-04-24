@@ -2,8 +2,8 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card style="width: 500px" class="bg-white">
       <q-card-section class="text-h6 text-primary q-pb-none">
-        <q-icon name="hub" class="q-mr-sm" />
-        {{ this.mode == 'edit' ? 'Editar ' : 'Criar ' }} Placa-Mãe
+        <q-icon name="desktop_windows" class="q-mr-sm" />
+        {{ this.mode == 'edit' ? 'Editar ' : 'Criar ' }} Monitor
       </q-card-section>
       <q-card-section class="text-grey-8 text-h6 q-mb-sm">
         <q-form @submit="handleSubmit" class="row q-col-gutter-md">
@@ -27,6 +27,39 @@
             <q-input
               v-model="obj.model"
               label="Modelo *"
+              :rules="[required]"
+              hide-bottom-space
+              outlined
+              dense
+            />
+          </div>
+          <div class="col-12">
+            <q-input
+              v-model.number="obj.size"
+              :rules="[required]"
+              hide-bottom-space
+              label="Tamanho (pol) *"
+              mask="#.#"
+              fill-mask="0"
+              reverse-fill-mask
+              outlined
+              dense
+            />
+          </div>
+          <div class="col-12">
+            <q-input
+              v-model="obj.connections"
+              label="Conexões *"
+              :rules="[required]"
+              hide-bottom-space
+              outlined
+              dense
+            />
+          </div>
+          <div class="col-12">
+            <q-input
+              v-model="obj.panel"
+              label="Painel *"
               :rules="[required]"
               hide-bottom-space
               outlined
@@ -69,8 +102,8 @@ import ComputerInput from 'components/ComputerInput'
 import { required } from 'src/utils/rules'
 
 export default {
-  name: 'MotherboardDialog',
-  props: ['motherboard', 'computer_id'],
+  name: 'MonitorDialog',
+  props: ['monitor', 'computer_id'],
   components: {
     ComputerInput
   },
@@ -80,7 +113,9 @@ export default {
       computer_id: '',
       manufacturer: '',
       model: '',
-      functional: false
+      functional: false,
+      panel: '',
+      connections: ''
     },
     loading: false
   }),
@@ -104,13 +139,13 @@ export default {
     },
     async handleSubmit () {
       if (this.mode == 'edit') {
-        const { data } = await this.$axios.put('motherboard/' + this.obj.id, { ...this.obj })
+        const { data } = await this.$axios.put('monitor/' + this.obj.id, { ...this.obj })
         this.$q.notify({
           message: data.message,
           type: 'positive'
         })
       } else {
-        const { data } = await this.$axios.post('motherboard', { ...this.obj })
+        const { data } = await this.$axios.post('monitor', { ...this.obj })
         this.$q.notify({
           message: data.message,
           type: 'positive'
@@ -120,8 +155,8 @@ export default {
     }
   },
   mounted () {
-    if (this.motherboard) {
-      this.obj = { ...this.motherboard }
+    if (this.monitor) {
+      this.obj = { ...this.monitor }
       this.mode = 'edit'
     } else {
       this.mode = 'create'

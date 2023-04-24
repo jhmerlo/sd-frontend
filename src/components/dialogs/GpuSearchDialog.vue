@@ -2,12 +2,12 @@
   <q-dialog ref="dialog" @hide="onDialogHide">
     <q-card style="width: 500px" class="bg-white">
       <q-card-section class="text-h6 text-primary q-pb-none">
-        <q-icon name="hub" class="q-mr-sm" />
-        Pesquisar Placa-Mãe
+        <q-icon name="extension" class="q-mr-sm" />
+        Pesquisar GPU
       </q-card-section>
       <q-card-section class="text-grey-8 text-h6 q-mb-sm">
         <div class="col-12">
-          <q-form ref="cForm" @submit="searchMotherboard">
+          <q-form ref="cForm" @submit="searchGpu">
             <q-input
               v-model="search"
               label="Identificador"
@@ -25,24 +25,38 @@
           </q-form>
         </div>
         
-        <template v-if="motherboard">
+        <template v-if="gpu">
           <div class="row col-12 text-body2 q-col-gutter-y-sm">
-            <div v-if="motherboard.computer_id" class="col-12">
-             <b>Identificador do Computador:</b> {{  motherboard.computer_id }}
+            <div v-if="gpu.computer_id" class="col-12">
+             <b>Identificador do Computador:</b> {{  gpu.computer_id }}
             </div>
             <div class="col-12">
-             <b>Fabricante:</b> {{  motherboard.manufacturer }}
+              <b>Fabricante:</b> {{  gpu.manufacturer }}
             </div>
             <div class="col-12">
-              <b>Modelo:</b> {{  motherboard.model }}
+              <b>Modelo:</b> {{  gpu.model }}
             </div>
             <div class="col-12">
-              <q-icon 
-                :name="motherboard.functional ? 'check_circle' : 'cancel'" 
-                :color="motherboard.functional ? 'positive' : 'negative'" 
+              <b>Clock:</b> {{  gpu.clock + ' MHz' }}
+            </div>
+            <div class="col-12">
+              <b>Capacidade:</b> {{  gpu.size + ' GB' }}
+            </div>
+            <div class="col-12">
+              <q-icon
+                :name="gpu.integrated ? 'group_work' : 'offline_bolt'" 
+                color="primary" 
                 size="xs"  
               />
-              {{ motherboard.functional ? 'Funcional' : 'Não Funcional' }}
+              {{ gpu.integrated ? 'Integrada' : 'Dedicada' }}
+            </div>
+            <div class="col-12">
+              <q-icon
+                :name="gpu.functional ? 'check_circle' : 'cancel'" 
+                :color="gpu.functional ? 'positive' : 'negative'" 
+                size="xs"  
+              />
+              {{ gpu.functional ? 'Funcional' : 'Não Funcional' }}
             </div>
           </div>
 
@@ -69,11 +83,11 @@
 import { required } from 'src/utils/rules'
 
 export default {
-  name: 'MotherboardSearchDialog',
+  name: 'GpuSearchDialog',
   props: ['computer_id'],
   data: () => ({
     search: '',
-    motherboard: null,
+    gpu: null,
     loading: false
   }),
   methods: {
@@ -92,8 +106,8 @@ export default {
       this.hide()
     },
     async confirm () {
-      await this.$axios.put('motherboard/' + this.motherboard.id, { 
-        ...this.motherboard,
+      await this.$axios.put('gpu/' + this.gpu.id, { 
+        ...this.gpu,
         computer_id: this.computer_id
       })
 
@@ -103,13 +117,15 @@ export default {
     onCancelClick () {
       this.hide()
     },
-    async searchMotherboard () {
-      this.loading = true
-      const { data } = await this.$axios.get('motherboard/' + this.search)
-
-      this.motherboard = data.motherboard
-
-      this.loading = false
+    async searchGpu () {
+      try {
+        this.loading = true
+        const { data } = await this.$axios.get('gpu/' + this.search)
+  
+        this.gpu = data.gpu
+      } finally {
+        this.loading = false
+      }
     }
   }
 }
