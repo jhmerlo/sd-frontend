@@ -20,7 +20,7 @@ export const maintenanceIcons = {
   1: 'category',
   2: 'hardware',
   3: 'build',
-  4: 'hub',
+  4: 'wifi',
   5: 'play_arrow',
   6: 'done_all'
   

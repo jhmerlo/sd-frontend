@@ -13,9 +13,9 @@
           <q-card-section class="col-xs-12 col-md-6">
             <q-icon
               color="primary"
-              class="q-mr-sm"
+              class="q-mr-lg q-mb-xs"
               name="computer"
-              size="lg"
+              size="md"
             />
             {{  description }}
             <b>{{ ' #' +  computer.id  }}</b>
@@ -40,6 +40,7 @@
 
       </div>
 
+      
       <div v-if="computer" class="col-12">
         <q-stepper  
           v-model="step"
@@ -79,13 +80,63 @@
           </template>
         </q-stepper>
       </div>
+
+      <div class="col-12">
+        <q-expansion-item
+          class="bg-white shadow-1"
+          style="border-radius: 4px"
+          icon="comment"
+          label="Comentários"
+          header-class="text-body2 text-primary"
+        >
+          <q-card>
+            <q-card-section class="q-pt-sm">
+              <div class="row q-col-gutter-sm">
+              <q-form class="q-mt-sm col-12" @submit="handleComment">
+                <q-editor placeholder="Escreva um novo comentário"  max-height="100px" dense toolbar-bg="primary" toolbar-color="white" toolbar-toggle-color="warning" v-model="commentBody" />
+                <q-card-actions align="right">
+                  <q-btn
+                    :loading="commentLoading"
+                    type="submit"
+                    label="Enviar"
+                    color="primary"
+                    icon="send"
+                    flat
+                  />
+                </q-card-actions>
+              </q-form>
+                <div class="text-body2 col-12 text-grey-9" v-for="comment in computer.comments" :key="comment.id">
+                  <q-card class="my-card" flat bordered>
+                    <q-item>
+                      <q-item-section avatar>
+                        <q-avatar>
+                          <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+                        </q-avatar>
+                      </q-item-section>
+  
+                      <q-item-section>
+                        <q-item-label>{{ comment.user.name }}</q-item-label>
+                        <q-item-label caption>
+                          {{  getLocaleDateString(comment.created_at) }}
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-card-section v-html="comment.body" />
+                  </q-card>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+      </div>
     </div>
   </q-page>
 </template>
 
 <script>
 import { stepOptions, maintenanceIcons } from 'src/utils/constants'
-
+import { required } from 'src/utils/rules'
 import ResponsibleDialog from 'components/dialogs/ResponsibleDialog'
 import Step1 from 'components/maintenanceSteps/Step1'
 import Step2 from 'components/maintenanceSteps/Step2'
@@ -102,9 +153,13 @@ export default {
     computer: {},
     description: null,
     stepOptions: [ ...stepOptions ],
-    maintenanceIcons: { ...maintenanceIcons }
+    maintenanceIcons: { ...maintenanceIcons },
+    profilePic: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png',
+    commentBody: '',
+    commentLoading: false
   }),
   methods: {
+    required,
     async showComputer () {
       this.$q.loading.show()
       try {
@@ -112,6 +167,7 @@ export default {
         this.computer = data.computer
         this.description = this.computer.description
         this.step = this.computer.current_step
+        console.log(this.computer)
       } catch {
         this.$router.push({ name: 'Computers' })
       } finally {
@@ -194,6 +250,33 @@ export default {
           this.$q.loading.hide()
         }
       })
+    },
+    async handleComment () {
+      try {
+        this.commentLoading = true
+
+        const { data } = await this.$axios.post('comment', {
+          body: this.commentBody,
+          commentable_id: this.computer.id,
+          commentable_type: 'App\\Models\\Computer'
+        })
+  
+        this.$q.notify({
+          message: data.message,
+          type: 'positive'
+        })
+  
+        this.commentBody = ''
+
+        this.showComputer()
+      } finally {
+        this.commentLoading = false
+      }
+    },
+    getLocaleDateString (date) {
+      const dt = new Date(date)
+
+      return dt.toLocaleDateString('pt-br') + ' ' + dt.toLocaleTimeString('pt-br')
     }
   },
   computed: {

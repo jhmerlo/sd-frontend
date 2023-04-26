@@ -7,7 +7,6 @@
           <q-icon name="computer" size="lg" class="q-mr-sm" /> Computadores
         </div>
         <q-expansion-item
-          v-model="expanded"
           class="bg-white shadow-1"
           style="border-radius: 4px"
           icon="search"
@@ -149,8 +148,7 @@ export default {
       current_step_responsible_id: '',
       id: ''
     },
-    userOptions: [],
-    expanded: false
+    userOptions: []
   }),
   methods: {
     async getComputers () {
