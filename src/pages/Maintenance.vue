@@ -8,7 +8,39 @@
         </div>
       </div>
 
-      <div class="col-12">
+      <div v-if="computer.responsible" class="col-12 text-body2 text-grey-9">
+        <q-card class="row items-center justify-between">
+          <q-card-section class="col-xs-12 col-md-6">
+            <q-icon
+              color="primary"
+              class="q-mr-sm"
+              name="computer"
+              size="lg"
+            />
+            {{  description }}
+            <b>{{ ' #' +  computer.id  }}</b>
+          </q-card-section>
+          <q-card-section :class="$q.screen.gt.sm ? 'text-right' : 'q-pt-none'" class="col-xs-12 col-md-6">
+            <b>Responsável:</b> {{  computer.responsible.name }}
+            <q-btn
+              @click="showResponsibleDialog"
+              icon="change_circle"
+              color="secondary"
+              class="q-mb-xs"
+              round
+              dense
+              flat
+            >
+              <q-tooltip>
+                Alterar Responsável
+              </q-tooltip>
+            </q-btn>
+          </q-card-section>
+        </q-card>
+
+      </div>
+
+      <div v-if="computer" class="col-12">
         <q-stepper  
           v-model="step"
           :vertical="$q.screen.lt.md"
@@ -29,20 +61,20 @@
             :header-nav="computer.current_step >= step.value"
             done-color="secondary"
           >
-            <q-form ref="stepForm" @submit="test">
+            <q-form ref="stepForm" @submit="handleSubmit">
               <component @refresh="showComputer" v-model="computer" :is="currentComponent" />
             </q-form>
           </q-step>
   
           <template v-slot:navigation>
             <q-stepper-navigation class="row justify-end">
+              <q-btn v-if="computer.current_step > 1" flat color="primary" @click="resetSteps" label="Retornar para Triagem" class="q-ml-sm" />
               <q-btn 
                 @click="() => $refs.stepForm[0].submit()" 
                 :disable="computer.current_step != step" 
-                :label="computer.current_step === 4 ? 'Finish' : 'Continuar'" 
+                label="Continuar"
                 color="primary" 
               />
-              <q-btn v-if="computer.current_step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
             </q-stepper-navigation>
           </template>
         </q-stepper>
@@ -53,6 +85,8 @@
 
 <script>
 import { stepOptions, maintenanceIcons } from 'src/utils/constants'
+
+import ResponsibleDialog from 'components/dialogs/ResponsibleDialog'
 import Step1 from 'components/maintenanceSteps/Step1'
 import Step2 from 'components/maintenanceSteps/Step2'
 
@@ -66,6 +100,7 @@ export default {
   data: () => ({
     step: null,
     computer: {},
+    description: null,
     stepOptions: [ ...stepOptions ],
     maintenanceIcons: { ...maintenanceIcons }
   }),
@@ -75,6 +110,7 @@ export default {
       try {
         const { data } = await this.$axios.get('computer/' + this.id)
         this.computer = data.computer
+        this.description = this.computer.description
         this.step = this.computer.current_step
       } catch {
         this.$router.push({ name: 'Computers' })
@@ -82,17 +118,82 @@ export default {
         this.$q.loading.hide()
       }
     },
-    async test () {
-      const { data } = await this.$axios.put('computer/' + this.computer.id + '/' + this.currentApiPath, {
-        ...this.computer
-      })
+    async handleSubmit () {
+      if (this.computer.current_step == 2) {
+        const functionalMotherboard = this.computer.motherboard?.functional
+        const functionalProcessor = this.computer.processor?.functional
+        const functionalPowerSupply = this.computer.power_supply?.functional
+        const functionalRamMemory = this.computer.ram_memories?.filter(itm => itm.functional == true).length > 0
+        const functionalStorageDevice = this.computer.storage_devices?.filter(itm => itm.functional == true).length > 0
+        const functionalGpu = this.computer.gpus?.filter(itm => itm.functional == true).length > 0
+        const functionalMonitor = this.computer.monitors?.filter(itm => itm.functional == true).length > 0
 
-      this.$q.notify({
-        message: data.message,
-        type: 'positive'
-      })
+        if (!(functionalMotherboard && functionalProcessor && functionalPowerSupply && 
+            functionalRamMemory && functionalStorageDevice && functionalGpu && functionalMonitor)
+        ) {
 
-      this.showComputer()
+          return this.$q.notify({
+            message: 'O computador não possui os componentes funcionais mínimos para a próxima etapa.',
+            type: 'warning'
+          })
+        }
+      }
+
+      try {
+        this.$q.loading.show()
+
+        const { data } = await this.$axios.put('computer/' + this.computer.id + '/' + this.currentApiPath, {
+          ...this.computer
+        })
+  
+        this.$q.notify({
+          message: data.message,
+          type: 'positive'
+        })
+  
+        this.showComputer()
+      } finally {
+        this.$q.loading.hide()
+      }
+    },
+    showResponsibleDialog () {
+      this.$q.dialog({
+        component: ResponsibleDialog,
+        computer_id: this.computer.id
+      }).onOk(() => {
+        this.showComputer()
+        this.$q.notify({
+          message: 'Responsável alterado com sucesso.',
+          type: 'positive'
+        })
+      })
+    },
+    async resetSteps () {
+      this.$q.dialog({
+        title: 'Retornar para Triagem',
+        message: 'Você tem certeza que deseja retornar este computador para a etapa de triagem?',
+        cancel: {
+          flat: true
+        },
+        ok: {
+          label: 'Continuar'
+        }
+      }).onOk(async () => {
+        try {
+          this.$q.loading.show()
+          const { data } = await this.$axios.put('computer/'+ this.computer.id + '/reset-steps')
+  
+          this.$q.notify({
+            type: 'positive',
+            message: data.message
+          })
+  
+          this.computer.current_step = 1
+          this.step = 1
+        } finally {
+          this.$q.loading.hide()
+        }
+      })
     }
   },
   computed: {
@@ -103,12 +204,14 @@ export default {
       switch (this.computer.current_step) {
         case 1:
           return 'sorting-step'
+        case 2:
+          return 'hardware-tests-step'
         default:
           return null
       }
     }
   },
-  mounted () {
+  created () {
     this.showComputer()
   }
 }

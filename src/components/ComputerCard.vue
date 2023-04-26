@@ -160,14 +160,19 @@ export default {
           flat: true
         }
       }).onOk(async () => {
-        const { data } = await this.$axios.put('computer/'+ id + '/reset-steps')
-
-        this.$q.notify({
-          type: 'positive',
-          message: data.message
-        })
-
-        this.$emit('refresh')
+        try {
+          this.$q.loading.show()
+          const { data } = await this.$axios.put('computer/'+ id + '/reset-steps')
+  
+          this.$q.notify({
+            type: 'positive',
+            message: data.message
+          })
+  
+          this.$emit('refresh')
+        } finally {
+          this.$q.loading.hide()
+        }
       })
     }
   }

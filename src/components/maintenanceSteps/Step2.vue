@@ -22,7 +22,7 @@
           :caption="functionalMotherboard"
         >
           <q-card>
-            <q-card-actions align="center" v-if="!val.motherboard">
+            <q-card-actions align="center" v-if="!val.motherboard && val.current_step == 2">
               <q-btn
                 @click="showMotherboardSearchDialog"
                 class="q-pa-xs"
@@ -59,7 +59,7 @@
                 </div>
               </div>
 
-              <q-card-actions align="right">
+              <q-card-actions v-if="val.current_step == 2" align="right">
                 <q-btn
                   @click="showMotherboardDialog('edit')"
                   label="Editar"
@@ -93,7 +93,7 @@
           :caption="functionalProcessor"
         >
           <q-card>
-            <q-card-actions align="center" v-if="!val.processor">
+            <q-card-actions align="center" v-if="!val.processor  && val.current_step == 2">
               <q-btn
                 @click="showProcessorSearchDialog"
                 class="q-pa-xs"
@@ -139,7 +139,7 @@
                 </div>
               </div>
 
-              <q-card-actions align="right">
+              <q-card-actions v-if="val.current_step == 2" align="right">
                 <q-btn
                   @click="showProcessorDialog('edit')"
                   label="Editar"
@@ -201,7 +201,7 @@
                   </div>
                 </div>
 
-                <q-card-actions align="right">
+                <q-card-actions v-if="val.current_step == 2" align="right">
                   <q-btn
                     @click="showRamMemoryDialog('edit', ramMemory)"
                     label="Editar"
@@ -222,7 +222,7 @@
                 <q-separator class="q-my-lg" />
               </div>
             </q-card-section>
-            <q-card-actions align="center">
+            <q-card-actions v-if="val.current_step == 2" align="center">
               <q-btn
                 @click="showRamMemorySearchDialog"
                 class="q-pa-xs"
@@ -285,7 +285,7 @@
                   </div>
                 </div>
 
-                <q-card-actions align="right">
+                <q-card-actions v-if="val.current_step == 2" align="right">
                   <q-btn
                     @click="showStorageDeviceDialog('edit', storageDevice)"
                     label="Editar"
@@ -306,7 +306,7 @@
                 <q-separator class="q-my-lg" />
               </div>
             </q-card-section>
-            <q-card-actions align="center">
+            <q-card-actions v-if="val.current_step == 2" align="center">
               <q-btn
                 @click="showStorageDeviceSearchDialog"
                 class="q-pa-xs"
@@ -341,7 +341,7 @@
           :caption="functionalPowerSupply"
         >
           <q-card>
-            <q-card-actions align="center" v-if="!val.power_supply">
+            <q-card-actions align="center" v-if="!val.power_supply && val.current_step == 2">
               <q-btn
                 @click="showPowerSupplySearchDialog"
                 class="q-pa-xs"
@@ -384,7 +384,7 @@
                 </div>
               </div>
 
-              <q-card-actions align="right">
+              <q-card-actions v-if="val.current_step == 2" align="right">
                 <q-btn
                   @click="showPowerSupplyDialog('edit')"
                   label="Editar"
@@ -451,7 +451,7 @@
                   </div>
                 </div>
 
-                <q-card-actions align="right">
+                <q-card-actions v-if="val.current_step == 2" align="right">
                   <q-btn
                     @click="showGpuDialog('edit', gpu)"
                     label="Editar"
@@ -472,7 +472,7 @@
                 <q-separator class="q-my-lg" />
               </div>
             </q-card-section>
-            <q-card-actions align="center">
+            <q-card-actions v-if="val.current_step == 2" align="center">
               <q-btn
                 @click="showGpuSearchDialog"
                 class="q-pa-xs"
@@ -535,7 +535,7 @@
                   </div>
                 </div>
 
-                <q-card-actions align="right">
+                <q-card-actions v-if="val.current_step == 2" align="right">
                   <q-btn
                     @click="showMonitorDialog('edit', monitor)"
                     label="Editar"
@@ -556,7 +556,7 @@
                 <q-separator class="q-my-lg" />
               </div>
             </q-card-section>
-            <q-card-actions align="center">
+            <q-card-actions v-if="val.current_step == 2" align="center">
               <q-btn
                 @click="showMonitorSearchDialog"
                 class="q-pa-xs"
