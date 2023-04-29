@@ -140,13 +140,15 @@ import { required } from 'src/utils/rules'
 import ResponsibleDialog from 'components/dialogs/ResponsibleDialog'
 import Step1 from 'components/maintenanceSteps/Step1'
 import Step2 from 'components/maintenanceSteps/Step2'
+import Step3 from 'components/maintenanceSteps/Step3'
 
 export default {
   name: 'Maintenance',
   props: ['id'],
   components: {
     Step1,
-    Step2
+    Step2,
+    Step3
   },
   data: () => ({
     step: null,
@@ -289,6 +291,8 @@ export default {
           return 'sorting-step'
         case 2:
           return 'hardware-tests-step'
+        case 3:
+          return 'maintenance-step'
         default:
           return null
       }
