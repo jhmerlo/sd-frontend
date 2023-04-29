@@ -142,6 +142,7 @@ import Step1 from 'components/maintenanceSteps/Step1'
 import Step2 from 'components/maintenanceSteps/Step2'
 import Step3 from 'components/maintenanceSteps/Step3'
 import Step4 from 'components/maintenanceSteps/Step4'
+import Step5 from 'components/maintenanceSteps/Step5'
 
 export default {
   name: 'Maintenance',
@@ -150,7 +151,8 @@ export default {
     Step1,
     Step2,
     Step3,
-    Step4
+    Step4,
+    Step5
   },
   data: () => ({
     step: null,
@@ -297,6 +299,8 @@ export default {
           return 'maintenance-step'
         case 4:
           return 'network-and-peripherals-step'
+        case 5:
+          return 'user-tests-step'
         default:
           return null
       }
