@@ -141,6 +141,7 @@ import ResponsibleDialog from 'components/dialogs/ResponsibleDialog'
 import Step1 from 'components/maintenanceSteps/Step1'
 import Step2 from 'components/maintenanceSteps/Step2'
 import Step3 from 'components/maintenanceSteps/Step3'
+import Step4 from 'components/maintenanceSteps/Step4'
 
 export default {
   name: 'Maintenance',
@@ -148,7 +149,8 @@ export default {
   components: {
     Step1,
     Step2,
-    Step3
+    Step3,
+    Step4
   },
   data: () => ({
     step: null,
@@ -293,6 +295,8 @@ export default {
           return 'hardware-tests-step'
         case 3:
           return 'maintenance-step'
+        case 4:
+          return 'network-and-peripherals-step'
         default:
           return null
       }

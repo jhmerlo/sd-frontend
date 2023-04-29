@@ -6,14 +6,14 @@
     <div class="col-12 text-caption q-mb-sm text-grey-9">
       Atividades realizadas para manter a operação do computador em boas condições.
     </div>
-    <div class="col-12">
+    <div v-if="val.current_step == 3" class="col-12">
       Foi necessário realizar manutenção no computador? 
       <q-toggle
         v-model="maintenanceToggle"
         color="secondary"
       />
     </div>
-    <template v-if="maintenanceToggle">
+    <template v-if="maintenanceToggle && val.current_step == 3">
       <q-form @submit="handleSubmit" class="row col-12 q-col-gutter-md">
         <div class="col-md-6 col-xs-12">
           <q-input
