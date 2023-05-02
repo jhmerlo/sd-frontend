@@ -4,7 +4,7 @@
       Testes de Usuário
     </div>
     <div class="col-12 text-caption q-mb-sm text-grey-9">
-      Atividades realizadas para manter a operação do computador em boas condições.
+      Atividades realizadas para verificar o desempenho do computador em rotinas básicas da área de trabalho e internet. 
     </div>
     <div v-if="val.current_step == 5" class="col-12">
       Deseja cadastrar os testes de usuário do computador? 
@@ -15,34 +15,44 @@
     </div>
     <template v-if="userTestToggle && val.current_step == 5">
       <q-form @submit="handleSubmit" class="row col-12 q-col-gutter-md">
+        <div class="col-12 q-mb-sm">
+          <q-separator />
+        </div>
         <div class="col-md-6 col-xs-12">
-          <q-input
-            label="Boot Automático"
+          O computador inicializa o sistema automaticamente?
+          <q-toggle
+            color="secondary"
+            class="q-ml-sm"
             v-model="userTests.auto_boot"
-            outlined
             dense
           />
         </div>
         <div class="col-md-6 col-xs-12">
-          <q-input
-            label="Inicialização"
+          A inicialização ocorre de maneira fluida e sem travamentos?
+          <q-toggle
+            color="secondary"
+            class="q-ml-sm"
             v-model="userTests.initialization"
             outlined
             dense
           />
         </div>
         <div class="col-md-6 col-xs-12">
-          <q-input
-            label="Atalhos"
+          Os atalhos da área de trabalho funcionam corretamente?
+          <q-toggle
+            color="secondary"
+            class="q-ml-sm"
             v-model="userTests.shortcuts"
             outlined
             dense
           />
         </div>
         <div class="col-md-6 col-xs-12">
-          <q-input
-            label="Data Correta"
+          O computador exibe data e hora corretamente?
+          <q-toggle
             v-model="userTests.correct_date"
+            color="secondary"
+            class="q-ml-sm"
             outlined
             dense
           />
@@ -84,8 +94,8 @@
       <q-list bordered>
         <q-expansion-item
           style="border-radius: 4px"        
-          icon="construction"
-          label="Histórico de Manutenção"
+          icon="ads_click"
+          label="Histórico de Testes de Usuário"
           header-class="text-body2 text-primary"
         >
           <q-card>
@@ -93,95 +103,120 @@
               <q-timeline color="primary">
   
                 <q-timeline-entry
-                  v-for="history in val.maintenance_histories"
-                  icon="construction"
-                  :key="history.id"
+                  v-for="userTest in val.user_test_histories"
+                  icon="ads_click"
+                  :key="userTest.id"
                 >
                 <template v-slot:title>
                   <div class="text-body1">
-                    {{ history.responsible.name }}
+                    {{ userTest.responsible.name }}
                   </div>
                 </template>
                 <template v-slot:subtitle>
-                  {{ getLocaleDateString(history.created_at) }}
+                  {{ getLocaleDateString(userTest.created_at) }}
                 </template>
                 
                 <q-list bordered>
-                  <q-item clickable v-if="history.software_installation">
+                  <q-item clickable>
                     <q-item-section avatar>
-                      <q-icon name="code" />
+                      <q-icon 
+                        :name="userTest.auto_boot ? 'check_circle' : 'cancel'"
+                        :color="userTest.auto_boot ? 'secondary' : 'negative'"
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label>
-                        Instalação de Software
+                        Inicialização automática
                       </q-item-label>
                       <q-item-label caption>
-                        {{ history.software_installation }}
+                        {{ userTest.auto_boot ? 'Sim' : 'Não' }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item clickable v-if="history.operational_system_installation">
+                  <q-item clickable>
                     <q-item-section avatar>
-                      <q-icon name="terminal" />
+                      <q-icon 
+                        :name="userTest.initialization ? 'check_circle' : 'cancel'"
+                        :color="userTest.initialization ? 'secondary' : 'negative'"
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label>
-                        Instalação de Sistema Operacional
+                        Inicialização fluida
                       </q-item-label>
                       <q-item-label caption>
-                        {{ history.operational_system_installation }}
+                        {{ userTest.initialization ? 'Sim' : 'Não' }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item clickable v-if="history.formatting">
+                  <q-item clickable>
                     <q-item-section avatar>
-                      <q-icon name="repartition" />
+                      <q-icon 
+                        :name="userTest.shortcuts ? 'check_circle' : 'cancel'"
+                        :color="userTest.shortcuts ? 'secondary' : 'negative'"
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label>
-                        Formatação
+                        Atalhos funcionais
                       </q-item-label>
                       <q-item-label caption>
-                        {{ history.formatting }}
+                        {{ userTest.shortcuts ? 'Sim' : 'Não' }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item clickable v-if="history.battery_change">
+                  <q-item clickable>
                     <q-item-section avatar>
-                      <q-icon name="battery_charging_full" />
+                      <q-icon 
+                        :name="userTest.correct_date ? 'check_circle' : 'cancel'"
+                        :color="userTest.correct_date ? 'secondary' : 'negative'"
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label>
-                        Troca de Bateria
+                        Data e hora correta
                       </q-item-label>
                       <q-item-label caption>
-                        {{ history.battery_change }}
+                        {{ userTest.correct_date ? 'Sim' : 'Não' }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item clickable v-if="history.suction">
+                  <q-item clickable v-if="userTest.gsuite_performance">
                     <q-item-section avatar>
-                      <q-icon name="cleaning_services" />
+                      <q-icon color="primary" name="apps" />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label>
-                        Aspiração
+                        Performance: GSuite
                       </q-item-label>
                       <q-item-label caption>
-                        {{ history.suction }}
+                        {{ userTest.gsuite_performance }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item clickable v-if="history.other">
+                  <q-item clickable v-if="userTest.wine_performance">
                     <q-item-section avatar>
-                      <q-icon name="more_horiz" />
+                      <q-icon color="primary" name="local_bar" />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label>
-                        Outros
+                        Performance: Wine
                       </q-item-label>
                       <q-item-label caption>
-                        {{ history.other }}
+                        {{ userTest.wine_performance }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-if="userTest.youtube_performance">
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="smart_display" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label>
+                        Performance: Youtube
+                      </q-item-label>
+                      <q-item-label caption>
+                        {{ userTest.youtube_performance }}
                       </q-item-label>
                     </q-item-section>
                   </q-item>
@@ -209,10 +244,10 @@ export default {
   },
   data: () => ({
     userTests: {
-      auto_boot: null,
-      initialization: null,
-      shortcuts: null,
-      correct_date: null,
+      auto_boot: true,
+      initialization: true,
+      shortcuts: true,
+      correct_date: true,
       gsuite_performance: '',
       wine_performance: '',
       youtube_performance: ''
@@ -224,36 +259,23 @@ export default {
     async handleSubmit () {
       try {
         this.$q.loading.show()
-        let count = 0
-        for (const key of Object.keys(this.maintenance)) {
-          if (this.maintenance[key] == '') {
-            count++
-          }
-        }
-  
-        if (count == Object.keys(this.maintenance).length) {
-          return this.$q.notify({
-            type: 'warning',
-            message: 'Preencha ao menos um campo para prosseguir.'
-          })
-        }
-  
-        await this.$axios.post('computer/' + this.val.id + '/maintenance-history', {
-          ...this.maintenance
+        await this.$axios.post('computer/' + this.val.id + '/user-test-history', {
+          ...this.userTests
         })
   
         this.$q.notify({
           type: 'positive',
-          message: 'Manutenção adicionada com sucesso.'
+          message: 'Teste de usuário adicionado com sucesso.'
         })
         
-        this.maintenance = {
-          software_installation: '',
-          operational_system_installation: '',
-          formatting: '',
-          battery_change: '',
-          suction: '',
-          other: ''
+        this.userTests = {
+          auto_boot: true,
+          initialization: true,
+          shortcuts: true,
+          correct_date: true,
+          gsuite_performance: '',
+          wine_performance: '',
+          youtube_performance: ''
         }
 
         this.$emit('refresh')

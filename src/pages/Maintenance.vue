@@ -58,7 +58,7 @@
             :icon="maintenanceIcons[step.value]"
             :done-icon="maintenanceIcons[step.value]"
             :active-icon="maintenanceIcons[step.value]"
-            :done="computer.current_step > step.value"
+            :done="computer.current_step > step.value || computer.current_step == 6"
             :header-nav="computer.current_step >= step.value"
             done-color="secondary"
           >
@@ -70,9 +70,9 @@
           <template v-slot:navigation>
             <q-stepper-navigation class="row justify-end">
               <q-btn v-if="computer.current_step > 1" flat color="primary" @click="resetSteps" label="Retornar para Triagem" class="q-ml-sm" />
-              <q-btn 
-                @click="() => $refs.stepForm[0].submit()" 
-                :disable="computer.current_step != step" 
+              <q-btn
+                v-if="step != 6"
+                @click="() => computer.current_step == step ? $refs.stepForm[0].submit() : $refs.stepper.next()" 
                 label="Continuar"
                 color="primary" 
               />
@@ -143,6 +143,7 @@ import Step2 from 'components/maintenanceSteps/Step2'
 import Step3 from 'components/maintenanceSteps/Step3'
 import Step4 from 'components/maintenanceSteps/Step4'
 import Step5 from 'components/maintenanceSteps/Step5'
+import Step6 from 'components/maintenanceSteps/Step6'
 
 export default {
   name: 'Maintenance',
@@ -152,7 +153,8 @@ export default {
     Step2,
     Step3,
     Step4,
-    Step5
+    Step5,
+    Step6
   },
   data: () => ({
     step: null,
