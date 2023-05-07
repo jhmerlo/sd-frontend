@@ -175,7 +175,10 @@ export default {
         this.computer = data.computer
         this.description = this.computer.description
         this.step = this.computer.current_step
-        console.log(this.computer)
+
+        this.computer.comments.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+        this.computer.user_test_histories.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+        this.computer.maintenance_histories.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
       } catch {
         this.$router.push({ name: 'Computers' })
       } finally {
