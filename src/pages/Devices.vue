@@ -103,7 +103,11 @@
       />
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn fab icon="add" color="primary" />
+      <q-btn @click="showCreateComputerDialog" fab icon="add" color="primary">
+        <q-tooltip>
+          Novo Computador
+        </q-tooltip>
+      </q-btn>
     </q-page-sticky>
   </q-page>
 </template>
@@ -114,6 +118,7 @@ import ComputerCard from 'components/ComputerCard.vue'
 import ComputerCardSkeleton from 'components/skeletons/ComputerCardSkeleton'
 import FilterableSelect from 'components/FilterableSelect'
 import ComputerInput from 'components/ComputerInput'
+import CreateComputerDialog from 'components/dialogs/CreateComputerDialog'
 
 export default {
   name: 'Devices',
@@ -181,6 +186,11 @@ export default {
       }
 
       this.getComputers()
+    },
+    showCreateComputerDialog () {
+      this.$q.dialog({
+        component: CreateComputerDialog
+      })
     }
   },
   created () {

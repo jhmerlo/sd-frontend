@@ -36,6 +36,8 @@
         label="Tipo"
         :options="typeOptions"
         :disable="val.current_step != 1"
+        :rules="[required]"
+        hide-bottom-space
         use-input
         map-options
         emit-value
@@ -49,7 +51,6 @@
         label="Sistema Operacional"
         v-model="val.operational_system"
         :disable="val.current_step != 1"
-        lazy-rules
         outlined
         dense
       />
@@ -59,7 +60,6 @@
         label="Patrimônio UFES"
         v-model="val.patrimony"
         :disable="val.current_step != 1"
-        lazy-rules
         outlined
         dense
       />
