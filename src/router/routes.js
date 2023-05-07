@@ -31,12 +31,12 @@ const routes = [
       { 
         name: 'Home',
         path: 'inicio',
-        component: () => import('pages/Index.vue') 
+        component: () => import('pages/Index.vue')
       },
       { 
         name: 'Devices',
         path: 'dispositivos',
-        component: () => import('pages/Devices.vue') 
+        component: () => import('pages/Devices.vue')
       },
       { 
         name: 'QRCode',
@@ -45,7 +45,7 @@ const routes = [
       },
       {
         name: 'Maintenance',
-        path: 'manutencao/:id',
+        path: 'dispositivos/manutencao/:id',
         component: () => import('pages/Maintenance.vue'),
         props: true
       }

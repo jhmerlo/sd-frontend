@@ -58,13 +58,14 @@
 
     <q-card-actions align="center" class="q-pt-xl absolute-bottom">
       <q-btn
+        @click="showLoansListDialog(computer.loans)"
         color="primary"
-        icon="visibility"
+        icon="list_alt"
         round
         flat
         >
         <q-tooltip>
-          Detalhes
+          Empréstimos
         </q-tooltip>
       </q-btn>
       <q-btn
@@ -119,6 +120,7 @@
 <script>
 import QRious from 'qrious'
 import { maintenanceSteps, maintenanceColors, maintenanceIcons } from 'src/utils/constants'
+import LoansListDialog from 'components/dialogs/LoansListDialog'
 
 export default {
   name: 'ComputerCard',
@@ -173,6 +175,12 @@ export default {
         } finally {
           this.$q.loading.hide()
         }
+      })
+    },
+    showLoansListDialog (loans) {
+      this.$q.dialog({
+        component: LoansListDialog,
+        loans
       })
     }
   }
