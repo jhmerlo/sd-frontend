@@ -48,6 +48,49 @@ const routes = [
         path: 'dispositivos/manutencao/:id',
         component: () => import('pages/Maintenance.vue'),
         props: true
+      },
+      {
+        name: 'Components',
+        path: 'componentes',
+        redirect: { name: 'Components.Motherboards' },
+        component: () => import('pages/Components.vue'),
+        children: [
+          {
+            name: 'Components.Motherboards',
+            path: 'placas-mae',
+            component: () => import('pages/Motherboards.vue')
+          },
+          {
+            name: 'Components.Processors',
+            path: 'processadores',
+            component: () => import('pages/Processors.vue')
+          },
+          {
+            name: 'Components.RamMemories',
+            path: 'memorias-ram',
+            component: () => import('pages/RamMemories.vue')
+          },
+          {
+            name: 'Components.StorageDevices',
+            path: 'dispositivos-de-armazenamento',
+            component: () => import('pages/StorageDevices.vue')
+          },
+          {
+            name: 'Components.PowerSupplies',
+            path: 'fontes-de-alimentacao',
+            component: () => import('pages/PowerSupplies.vue')
+          },
+          {
+            name: 'Components.Gpus',
+            path: 'gpus',
+            component: () => import('pages/Gpus.vue')
+          },
+          {
+            name: 'Components.Monitors',
+            path: 'monitores',
+            component: () => import('pages/Monitors.vue')
+          },
+        ]
       }
     ]
   },

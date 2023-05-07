@@ -67,7 +67,8 @@ export default {
       },
       {
         icon: 'memory',
-        label: 'Componentes'
+        label: 'Componentes',
+        to: { name: 'Components' }
       },
       {
         icon: 'list_alt',

@@ -3,9 +3,6 @@
     <div class="row q-pa-sm q-col-gutter-sm">
       
       <div class="col-12">
-        <div class="text-h5 text-primary text-weight-bold q-mx-sm q-my-md">
-          <q-icon name="computer" size="lg" class="q-mr-sm" /> Computadores
-        </div>
         <q-expansion-item
           class="bg-white shadow-1"
           style="border-radius: 4px"
