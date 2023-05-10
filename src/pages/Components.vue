@@ -6,7 +6,7 @@
         <q-tabs
           outside-arrows
           mobile-arrows
-          class="bg-white rounded-borders shadow-1"
+          class="bg-white rounded-borders shadow-1 text-grey-8"
           align="justify"
           active-color="secondary"
           indicator-color="secondary"

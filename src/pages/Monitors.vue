@@ -188,6 +188,7 @@ export default {
       { name: 'manufacturer', label: 'Fabricante', field: 'manufacturer', align: 'left', tooltip: true, style: 'max-width: 200px', classes: 'ellipsis' },
       { name: 'model', label: 'Modelo', field: 'model', align: 'left', tooltip: true, style: 'max-width: 200px', classes: 'ellipsis' },
       { name: 'size', label: 'Tamanho', field: 'size', align: 'left', format: v => v ? v + ' pol' : '-'},
+      { name: 'borrowed', label: 'Emprestado', field: 'borrowed', align: 'left'},
       { name: 'connections', label: 'Conexões', field: 'connections', align: 'left', tooltip: true, style: 'max-width: 200px', classes: 'ellipsis' },
       { name: 'panel', label: 'Painel', field: 'panel', align: 'left' },
       { name: 'functional', label: 'Funcional', field: 'functional', align: 'center' },

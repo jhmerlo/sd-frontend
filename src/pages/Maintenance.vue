@@ -69,7 +69,7 @@
   
           <template v-slot:navigation>
             <q-stepper-navigation class="row justify-end">
-              <q-btn v-if="computer.current_step > 1" flat color="primary" @click="resetSteps" label="Retornar para Triagem" class="q-ml-sm" />
+              <q-btn v-if="computer.current_step > 1 && !computer.borrowed" flat color="primary" @click="resetSteps" label="Retornar para Triagem" class="q-ml-sm" />
               <q-btn
                 v-if="step != 6"
                 @click="() => computer.current_step == step ? $refs.stepForm[0].submit() : $refs.stepper.next()" 
@@ -179,6 +179,8 @@ export default {
         this.computer.comments.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
         this.computer.user_test_histories.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
         this.computer.maintenance_histories.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+
+        console.log(this.computer)
       } catch {
         this.$router.push({ name: 'Computers' })
       } finally {
