@@ -8,7 +8,7 @@
       <q-card-section class="text-grey-8 text-h6 q-mb-sm">
         <q-timeline v-if="transferHistories.length > 0" class="q-ml-sm" color="primary">
           <q-timeline-entry
-            v-for="transferHistory in transferHistories"
+            v-for="transferHistory in histories"
             color="primary"
             icon="move_up"
             :key="transferHistory.id"
@@ -42,7 +42,8 @@ export default {
   name: 'TransferHistoryDialog',
   props: ['transferHistories'],
   data: () => ({
-    loading: false
+    loading: false,
+    histories: []
   }),
   methods: {
     show () {
@@ -72,6 +73,11 @@ export default {
 
       return 'Transferência de ' + source + ' para ' + target
     }
+  },
+  created () {
+    this.histories = [ ...this.transferHistories ]
+
+    this.histories.sort((a,b) => Date.parse(b.created_at) - Date.parse(a.created_at))
   }
 }
 </script>
