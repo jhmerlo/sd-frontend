@@ -211,8 +211,10 @@ export default {
     },
     clearFilters () {
       this.filters = {
-        current_step: '',
-        type: ''
+        manufacturer: '',
+        model: '',
+        computer_id: '',
+        id: ''
       }
 
       this.getIndex()
