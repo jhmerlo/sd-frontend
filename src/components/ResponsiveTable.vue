@@ -15,53 +15,53 @@
       table-header-class="text-primary"
     >
       <template v-if="responsive" #item="props">
-        <q-card
-          flat
-          bordered
-          :class="props.pageIndex === 0 ? 'q-mt-none q-mb-xs' : 'q-my-xs'"
-          class="fit"
-        >
-          <q-list dense class="q-gutter-y-xs q-py-sm">
-            <q-item
-              v-for="col in propsCols(props)"
-              :key="col.name"
-              class="q-my-sm"
-            >
-              <q-item-section>
-                <q-item-label>{{ col.label }}</q-item-label>
-                <q-item-label class="break-word" caption>
-                  <slot
-                    v-if="mobileSlots.includes(col.name)"
-                    :name="`name-${col.name}`"
-                    :props="{ ...props, value: col.value, responsive }"
-                  />
-                  <span v-else>{{ col.value === null ? '-' : col.value }}</span>
-                  <q-tooltip
-                    v-if="showColTooltip(col)"
-                    content-style="font-size: 12px"
-                  >
-                    <div v-html="getColTooltipText({ col, row: props.row })" />
-                  </q-tooltip>
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-            <template v-for="col in propsCols(props, true)">
-              <q-item v-if="col.label" :key="col.name + '-bottom-1'">
-                <q-item-section no-wrap>
+        <div class="col-xs-12 col-sm-6 q-px-xs q-py-xs">
+          <q-card
+            flat
+            bordered
+          >
+            <q-list dense class="q-gutter-y-xs q-py-sm">
+              <q-item
+                v-for="col in propsCols(props)"
+                :key="col.name"
+                class="q-my-sm"
+              >
+                <q-item-section>
                   <q-item-label>{{ col.label }}</q-item-label>
+                  <q-item-label class="break-word" caption>
+                    <slot
+                      v-if="mobileSlots.includes(col.name)"
+                      :name="`name-${col.name}`"
+                      :props="{ ...props, value: col.value, responsive }"
+                    />
+                    <span v-else>{{ col.value === null ? '-' : col.value }}</span>
+                    <q-tooltip
+                      v-if="showColTooltip(col)"
+                      content-style="font-size: 12px"
+                    >
+                      <div v-html="getColTooltipText({ col, row: props.row })" />
+                    </q-tooltip>
+                  </q-item-label>
                 </q-item-section>
               </q-item>
-              <q-item :key="col.name + '-bottom-2'">
-                <q-item-section no-wrap>
-                  <slot
-                    :name="`name-${col.name}-mobile`"
-                    :props="{ ...props, responsive }"
-                  />
-                </q-item-section>
-              </q-item>
-            </template>
-          </q-list>
-        </q-card>
+              <template v-for="col in propsCols(props, true)">
+                <q-item v-if="col.label" :key="col.name + '-bottom-1'">
+                  <q-item-section no-wrap>
+                    <q-item-label>{{ col.label }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-item :key="col.name + '-bottom-2'">
+                  <q-item-section no-wrap>
+                    <slot
+                      :name="`name-${col.name}-mobile`"
+                      :props="{ ...props, responsive }"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-list>
+          </q-card>
+        </div>
       </template>
       <template v-for="slot in tableSlots" #[slot.originalName]="props">
         <component :is="slot.is" :name="slot.originalName" :key="slot.name">
