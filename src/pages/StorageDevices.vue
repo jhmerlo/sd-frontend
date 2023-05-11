@@ -94,7 +94,7 @@
             <div class="col-12 q-gutter-xs row no-wrap justify-center">
               <q-item
                 @click="showStorageDeviceDialog(props.row)"
-                :disable="loading"
+                :disable="loading || props.row.borrowed"
                 class="text-center text-grey-7"
                 clickable
                 dense
@@ -162,6 +162,17 @@
               </q-chip>
             </div>
           </template>
+          <template #name-borrowed="{ props }">
+            <div :class="$q.screen.gt.sm ? 'justify-center' : ''" class="col-12 row">
+              <q-chip
+                size="sm"
+                class="text-white"
+                :color="props.row.borrowed ? 'warning' : 'secondary'"
+              >
+                {{ props.row.borrowed ? 'Emprestado' : 'Liberado'}}
+              </q-chip>
+            </div>
+          </template>
         </responsive-table>
       </div>
     </div>
@@ -207,6 +218,7 @@ export default {
       { name: 'connection_technology', label: 'Tecnologia', field: 'connection_technology', align: 'left', format: v => v ? v : '-'},
       { name: 'size', label: 'Capacidade', field: 'size', align: 'left', format: v => v ? v + ' GB' : '-'},
       { name: 'functional', label: 'Funcional', field: 'functional', align: 'center' },
+      { name: 'borrowed', label: 'Emprestado', field: 'borrowed', align: 'left'},
       { name: 'computer_id', label: 'Computador', field: 'computer_id', align: 'center', classes: 'text-center text-weight-bold', format: v => v ? '#' + v : '-'  },
       { name: 'updated_at', label: 'Atualizado em', field: 'updated_at', align: 'left', format: v => date.formatDate(v, 'DD/MM/YYYY - HH:mm') },
       { name: 'actions', label: 'Ações', field: 'actions', align: 'center' }
