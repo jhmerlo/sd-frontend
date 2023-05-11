@@ -60,12 +60,6 @@
         <router-view />
       </div>
     </div>
-
-    
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn fab icon="add" color="primary">
-      </q-btn>
-    </q-page-sticky>
   </q-page>
 </template>
 
