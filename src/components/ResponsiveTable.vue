@@ -15,7 +15,7 @@
       table-header-class="text-primary"
     >
       <template v-if="responsive" #item="props">
-        <div class="col-xs-12 col-sm-6 q-px-xs q-py-xs">
+        <div :class="getComputedClass(props.pageIndex)" class="col-xs-12 col-sm-6">
           <q-card
             flat
             bordered
@@ -208,6 +208,29 @@ export default {
       }
 
       return escapeHtml(result)
+    },
+    getComputedClass (index) {
+      let computedClass = ''
+      if (this.$q.screen.sm) {
+        if (index > 1) {
+          computedClass += 'q-py-xs'
+        } else {
+          computedClass += 'q-pb-xs'
+        }
+
+        if (index % 2 == 0) {
+          computedClass += ' q-pr-xs'
+        } else {
+          computedClass += ' q-pl-xs'
+        }
+      } else if (this.$q.screen.xs) {
+        if (index == 0) {
+          computedClass += 'q-pb-xs'
+        } else {
+          computedClass += 'q-py-xs'
+        }
+      }
+      return computedClass
     }
   }
 }

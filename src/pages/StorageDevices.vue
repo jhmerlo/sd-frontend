@@ -81,7 +81,7 @@
         </q-expansion-item>
       </div>
 
-      <div class="col-12">
+      <div :class="$q.screen.xs || $q.screen.sm ? 'col-12 q-pt-none' : 'col-12'">
         <responsive-table
           @request="getIndex"
           :columns="columns"

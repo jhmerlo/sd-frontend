@@ -30,6 +30,17 @@
                     />
                   </div>
                   <div class="col-md-3 col-sm-6 col-xs-12">
+                    <q-select
+                      label="Emprestado"
+                      v-model="filters.borrowed"
+                      :options="[{label: 'Sim', value: true}, {label: 'Não', value: false}]"
+                      emit-value
+                      map-options
+                      outlined
+                      dense
+                    />
+                  </div>
+                  <div class="col-md-3 col-sm-6 col-xs-12">
                     <computer-input
                       label="Identificador do Computador"
                       v-model="filters.computer_id" 
@@ -65,7 +76,7 @@
         </q-expansion-item>
       </div>
 
-      <div class="col-12">
+      <div :class="$q.screen.xs || $q.screen.sm ? 'col-12 q-pt-none' : 'col-12'">
         <responsive-table
           @request="getIndex"
           :columns="columns"
@@ -189,7 +200,8 @@ export default {
       manufacturer: '',
       model: '',
       computer_id: '',
-      id: ''
+      id: '',
+      borrowed: ''
     },
     pagination: {
       page: 1,
@@ -230,7 +242,8 @@ export default {
         manufacturer: '',
         model: '',
         computer_id: '',
-        id: ''
+        id: '',
+        borrowed: ''
       }
 
       this.getIndex()
