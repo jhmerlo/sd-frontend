@@ -1,9 +1,9 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide">
+  <q-dialog :position="$q.screen.xs ? 'bottom' : undefined" ref="dialog" @hide="onDialogHide">
     <q-card style="width: 500px" class="bg-white">
       <q-card-section class="text-h6 text-primary q-pb-none">
         <q-icon name="computer" class="q-mr-sm" />
-        Novo Computador
+        {{ loanable ? 'Visualizar Computador' : 'Novo Computador' }}
       </q-card-section>
       <q-card-section class="text-grey-8 text-h6 q-mb-sm">
         <q-form @submit="handleSubmit" class="row q-col-gutter-md">
@@ -12,6 +12,7 @@
               label="Descrição *"
               v-model="computer.description"
               :rules="[required]"
+              :disable="typeof loanable == 'object'"
               lazy-rules
               hide-bottom-space
               outlined
@@ -23,6 +24,7 @@
               label="Fabricante *"
               v-model="computer.manufacturer"
               :rules="[required]"
+              :disable="typeof loanable == 'object'"
               lazy-rules
               hide-bottom-space
               outlined
@@ -35,6 +37,7 @@
               label="Tipo"
               :options="typeOptions"
               :rules=[required]
+              :disable="typeof loanable == 'object'"
               hide-bottom-space
               use-input
               map-options
@@ -48,6 +51,7 @@
             <q-input
               label="Sistema Operacional"
               v-model="computer.operational_system"
+              :disable="typeof loanable == 'object'"
               outlined
               dense
             />
@@ -56,6 +60,7 @@
             <q-input
               label="Patrimônio UFES"
               v-model="computer.patrimony"
+              :disable="typeof loanable == 'object'"
               outlined
               dense
             />
@@ -67,6 +72,7 @@
               size="lg"
               color="secondary"
               :label="computer.sanitized ? 'Higienizado' : 'Não Higienizado'"
+              :disable="typeof loanable == 'object'"
               class="text-grey-9"
             />
           </div>
@@ -77,10 +83,11 @@
               size="lg"
               color="secondary"
               :label="computer.functional ? 'Funcional' : 'Não Funcional'"
+              :disable="typeof loanable == 'object'"
               class="text-grey-9"
             />
           </div>
-          <div class="col-12">
+          <div v-if="!loanable" class="col-12">
             <q-card-actions align="right">
               <q-btn
                 @click="onCancelClick"
@@ -106,6 +113,7 @@ import { required } from 'src/utils/rules'
 
 export default {
   name: 'CreateComputerDialog',
+  props: ['loanable'],
   data: () => ({
     computer: {
       description: '',
@@ -160,6 +168,11 @@ export default {
         this.$q.loading.hide()
       }
       this.onOKClick()
+    }
+  },
+  created () {
+    if (this.loanable) {
+      this.computer = { ...this.loanable }
     }
   }
 }

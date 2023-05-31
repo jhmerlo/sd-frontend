@@ -1,7 +1,6 @@
 <template>
   <q-page class="bg-grey-2">
     <div class="row q-pa-sm q-col-gutter-sm">
-      
       <div class="col-12">
         <q-expansion-item
           class="bg-white shadow-1"

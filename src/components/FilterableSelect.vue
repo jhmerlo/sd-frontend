@@ -6,6 +6,8 @@
     :label="label"
     :loading="loading"
     :use-chips="val != ''"
+    :option-value="optionValue"
+    :option-label="optionLabel"
     emit-value
     map-options
     use-input
@@ -29,6 +31,16 @@ export default {
       type: String,
       required: false,
       default: ''
+    },
+    optionValue: {
+      type: String,
+      required: false,
+      default: 'value'
+    },
+    optionLabel: {
+      type: String,
+      required: false,
+      default: 'label'
     },
     loading: {
       type: Boolean,

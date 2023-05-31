@@ -1,12 +1,12 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide">
+  <q-dialog :position="$q.screen.xs ? 'bottom' : undefined" ref="dialog" @hide="onDialogHide">
     <q-card style="width: 500px" class="bg-white">
       <q-card-section class="text-h6 text-primary q-pb-none">
         <q-icon name="extension" class="q-mr-sm" />
         Pesquisar GPU
       </q-card-section>
       <q-card-section class="text-grey-8 text-h6 q-mb-sm">
-        <div class="col-12">
+        <div v-if="!loanable" class="col-12">
           <q-form ref="cForm" @submit="searchGpu">
             <q-input
               v-model="search"
@@ -84,7 +84,7 @@ import { required } from 'src/utils/rules'
 
 export default {
   name: 'GpuSearchDialog',
-  props: ['computer_id'],
+  props: ['computer_id', 'loanable'],
   data: () => ({
     search: '',
     gpu: null,
@@ -126,6 +126,11 @@ export default {
       } finally {
         this.loading = false
       }
+    }
+  },
+  created () {
+    if (this.loanable) {
+      this.gpu = { ...this.loanable }
     }
   }
 }

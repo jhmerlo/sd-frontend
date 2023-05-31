@@ -72,7 +72,8 @@ export default {
       },
       {
         icon: 'list_alt',
-        label: 'Empréstimos'
+        label: 'Empréstimos',
+        to: { name: 'Loans' }
       },
       {
         icon: 'groups',

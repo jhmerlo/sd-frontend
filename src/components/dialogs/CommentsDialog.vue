@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialog" @hide="onDialogHide">
+  <q-dialog :position="$q.screen.xs ? 'bottom' : undefined" ref="dialog" @hide="onDialogHide">
     <q-card style="width: 500px" class="bg-white">
       <q-card-section class="text-h6 text-primary q-pb-none">
         <q-icon name="comment" class="q-mr-sm" />
@@ -111,6 +111,7 @@ export default {
     },
   },
   created () {
+    console.log(this.commentable)
     this.comments = [ ...this.commentable.comments ]
     this.comments.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
   }

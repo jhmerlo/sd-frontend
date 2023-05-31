@@ -91,7 +91,13 @@ const routes = [
             component: () => import('pages/Monitors.vue')
           },
         ]
-      }
+      },
+      {
+        name: 'Loans',
+        path: 'emprestimos',
+        component: () => import('pages/Loans.vue'),
+        props: true
+      },
     ]
   },
 
