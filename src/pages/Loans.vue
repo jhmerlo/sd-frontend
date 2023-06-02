@@ -100,12 +100,12 @@
                     <q-icon name="visibility" size="sm" />
                   </q-item-label>
                   <q-item-label caption>
-                    Visualizar Item
+                    Visualizar
                   </q-item-label>
                 </q-item-section>
               </q-item>
               <q-item
-                @click="showTransferHistoryDialog(props.row)"
+                @click="showReturnLoanDialog(props.row)"
                 :disable="loading"
                 class="text-center text-grey-7"
                 clickable
@@ -114,10 +114,10 @@
               >
                 <q-item-section>
                   <q-item-label>
-                    <q-icon name="history" size="sm" />
+                    <q-icon name="keyboard_return" size="sm" />
                   </q-item-label>
                   <q-item-label caption>
-                    Histórico
+                    Devolução
                   </q-item-label>
                 </q-item-section>
               </q-item>
@@ -156,7 +156,7 @@
               <q-chip
                 size="sm"
                 class="text-white"
-                :color="getStatus(props.row) == 'Emprestado' ? 'warning' : getStatus(props.row) == 'Liberado' ? 'secondary' : 'negative'"
+                :color="getStatus(props.row) == 'Emprestado' ? 'red-4' : getStatus(props.row) == 'Liberado' ? 'secondary' : 'negative'"
               >
                 {{ getStatus(props.row) }}
               </q-chip>
@@ -166,7 +166,7 @@
       </div>
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn @click="showLoanableDialog(null)" fab icon="add" color="primary">
+      <q-btn @click="showCreateLoanDialog" fab icon="add" color="primary">
       </q-btn>
     </q-page-sticky>
   </q-page>
@@ -176,8 +176,9 @@
 import FilterableSelect from 'components/FilterableSelect'
 import ResponsiveTable from 'components/ResponsiveTable'
 import ComputerInput from 'components/ComputerInput'
-import TransferHistoryDialog from 'components/dialogs/TransferHistoryDialog'
+import CreateLoanDialog from 'components/dialogs/CreateLoanDialog'
 import CommentsDialog from 'components/dialogs/CommentsDialog'
+import ReturnLoanDialog from 'components/dialogs/ReturnLoanDialog'
 
 import MotherboardSearchDialog from 'components/dialogs/MotherboardSearchDialog'
 import ProcessorSearchDialog from 'components/dialogs/ProcessorSearchDialog'
@@ -314,10 +315,20 @@ export default {
         this.getIndex()
       })
     },
-    showTransferHistoryDialog ({ transfer_histories }) {
+    showCreateLoanDialog () {
       this.$q.dialog({
-        component: TransferHistoryDialog,
-        transferHistories: transfer_histories
+        component: CreateLoanDialog,
+        borrowersOptions: this.borrowersOptions
+      }).onOk(() => {
+        this.getIndex()
+      })
+    },
+    showReturnLoanDialog (loan) {
+      this.$q.dialog({
+        component: ReturnLoanDialog,
+        loan
+      }).onOk(() => {
+        this.getIndex()
       })
     },
     showCommentsDialog (commentable) {
@@ -348,5 +359,11 @@ export default {
 </script>
 
 <style>
+.q-table__bottom {
+  justify-content: start !important;
+}
 
+.q-table__bottom .q-table__separator {
+  display: none !important;
+}
 </style>

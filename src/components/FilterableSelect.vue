@@ -8,6 +8,9 @@
     :use-chips="val != ''"
     :option-value="optionValue"
     :option-label="optionLabel"
+    :rules="rules"
+    lazy-rules
+    hide-bottom-space
     emit-value
     map-options
     use-input
@@ -46,6 +49,10 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    rules: {
+      type: Array,
+      required: false
     }
   },
   data: () => ({
@@ -72,7 +79,7 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase()
-        this.opt = this.options.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+        this.opt = this.options.filter(v => v[this.optionLabel].toLowerCase().indexOf(needle) > -1)
       })
     },
   }

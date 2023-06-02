@@ -159,7 +159,7 @@
               <q-chip
                 size="sm"
                 class="text-white"
-                :color="props.row.borrowed ? 'warning' : 'secondary'"
+                :color="props.row.borrowed ? 'red-4' : 'secondary'"
               >
                 {{ props.row.borrowed ? 'Emprestado' : 'Liberado'}}
               </q-chip>

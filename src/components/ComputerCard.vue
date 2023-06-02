@@ -4,8 +4,8 @@
       #{{ computer.id }}
     </div>
     <div class="absolute-top-left q-pa-sm text-caption text-grey-9 text-weight-bold">
-      <q-chip class="q-ma-none text-caption" size="sm" :color="maintenanceColors[computer.current_step]" text-color="white" :icon="maintenanceIcons[computer.current_step]">
-        {{ maintenanceSteps[computer.current_step] }}
+      <q-chip class="q-ma-none text-caption" size="sm" :color="computer.borrowed ? 'red-4' : maintenanceColors[computer.current_step]" text-color="white" :icon="computer.borrowed ? 'handshake' : maintenanceIcons[computer.current_step]">
+        {{ computer.borrowed ? 'Emprestado' : maintenanceSteps[computer.current_step] }}
       </q-chip>
     </div>
     <q-card-section class="q-pb-none">

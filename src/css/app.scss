@@ -1,4 +1,6 @@
 // app global css in SCSS form
-.q-notifications__list {
-  padding-bottom: 60px !important;
+@media only screen and (max-width: 1023.99px) {
+  .q-notifications__list {
+    padding-bottom: 60px !important;
+  }
 }

@@ -2,6 +2,9 @@
   <q-input
     v-model="val"
     :label="label"
+    :rules="rules"
+    lazy-rules
+    hide-bottom-space
     outlined
     dense
   >
@@ -23,6 +26,10 @@ export default {
     label: {
       type: String,
       default: ''
+    },
+    rules: {
+      type: Array,
+      required: false
     }
   },
   computed: {
