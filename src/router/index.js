@@ -40,7 +40,7 @@ export default function ({ store }) {
     const user = store.getters['auth/getUser']
 
     if (!user) {
-      if (to.matched.some(route => route.meta.authOnly)) {
+      if (to.matched.some(route => route.meta.authOnly || route.meta.adminOnly)) {
         if (flag) return
         flag = true
         Vue.prototype.$q.notify({
@@ -51,11 +51,19 @@ export default function ({ store }) {
       }
       return next()
     } else if (user) {
-      if (to.matched.some(route => route.meta.guestOnly)) {
-        return next({ name: 'Home' })
+      if (user.license == 'maintenance') {
+        if (to.matched.some(route => route.meta.adminOnly || route.meta.guestOnly)) {
+          if (flag) return
+          flag = true
+          Vue.prototype.$q.notify({
+            type: 'warning',
+            message: 'Você não possui autorização para acessar esta página.'
+          })
+          return next({ name: 'Login' })
+        }
+        return next()
       }
     }
-
     return next()
   })
 

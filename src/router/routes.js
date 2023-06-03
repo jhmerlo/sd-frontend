@@ -104,6 +104,13 @@ const routes = [
         component: () => import('pages/Borrowers.vue'),
         props: true
       },
+      {
+        name: 'Users',
+        path: 'usuarios',
+        meta: { adminOnly: true },
+        component: () => import('pages/Users.vue'),
+        props: true
+      },
     ]
   },
 

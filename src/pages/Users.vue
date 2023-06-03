@@ -37,6 +37,28 @@
                       dense
                     />
                   </div>
+                  <div class="col-md-3 col-sm-6 col-xs-12">
+                    <q-select
+                      label="Licença"
+                      v-model="filters.license"
+                      :options="[{label: 'Ativo', value: 'active'}, { label: 'Inativo', value: 'inactive' }]"
+                      map-options
+                      emit-value
+                      outlined
+                      dense
+                    />
+                  </div>
+                  <div class="col-md-3 col-sm-6 col-xs-12">
+                    <q-select
+                      label="Papel"
+                      v-model="filters.role"
+                      :options="[{label: 'Manutenção', value: 'maintenance'}, { label: 'Administrador', value: 'admin' }]"
+                      map-options
+                      emit-value
+                      outlined
+                      dense
+                    />
+                  </div>
                 </div>
                 <div class="col-12 q-mt-sm text-right">
                   <q-btn
@@ -71,8 +93,8 @@
           <template #name-actions="{ props }">
             <div class="col-12 q-gutter-xs row no-wrap justify-center">
               <q-item
-                @click="showLoansListDialog(props.row)"
-                :disable="loading"
+                @click="switchUserLicense(props.row.institutional_id)"
+                :disable="loading || props.row.role == 'admin'"
                 class="text-center text-grey-7"
                 clickable
                 dense
@@ -80,40 +102,56 @@
               >
                 <q-item-section>
                   <q-item-label>
-                    <q-icon name="list_alt" size="sm" />
+                    <q-icon :name="props.row.license == 'active' ? 'no_accounts' : 'done_all'" size="sm" />
                   </q-item-label>
                   <q-item-label caption>
-                    Empréstimos
+                    {{ props.row.license == 'active' ? 'Desativar Usuário' : 'Ativar Usuário' }}
                   </q-item-label>
                 </q-item-section>
               </q-item>
             </div>
           </template>
-          <template #name-activeLoan="{ props }">
+          <template #name-license="{ props }">
             <div :class="$q.screen.gt.sm ? 'justify-center' : ''" class="col-12 row text-center">
               <q-chip
                 size="sm"
                 class="text-white"
-                :color="hasActiveLoan(props.row) ? 'secondary' : 'red-4'"
+                :color="props.row.license == 'active' ? 'secondary' : 'red-4'"
               >
-                {{ hasActiveLoan(props.row) ? 'Ativo' : 'Inativo'}}
+                {{ props.row.license == 'active' ? 'Ativo' : 'Inativo'}}
+              </q-chip>
+            </div>
+          </template>
+          <template #name-role="{ props }">
+            <div :class="$q.screen.gt.sm ? 'justify-center' : ''" class="col-12 row text-center">
+              <q-chip
+                size="sm"
+                class="text-white"
+                :color="props.row.role == 'maintenance' ? 'blue-4' : 'purple-4'"
+              >
+                {{ props.row.role == 'maintenance' ? 'Manutenção' : 'Administrador'}}
+              </q-chip>
+            </div>
+          </template>
+          <template #name-email_verified_at="{ props }">
+            <div :class="$q.screen.gt.sm ? 'justify-center' : ''" class="col-12 row text-center">
+              <q-chip
+                size="sm"
+                class="text-white"
+                :color="props.row.email_verified_at == null ? 'negative' : 'secondary'"
+              >
+                {{ props.row.email_verified_at == null ? 'Não Verificado' : 'Verificado'}}
               </q-chip>
             </div>
           </template>
         </responsive-table>
       </div>
     </div>
-    <q-page-sticky position="bottom-right" :offset="[18, 18]">
-      <q-btn @click="showCreateBorrowerDialog" fab icon="add" color="primary">
-      </q-btn>
-    </q-page-sticky>
   </q-page>
 </template>
 
 <script>
 import ResponsiveTable from 'components/ResponsiveTable'
-import LoansListDialog from 'components/dialogs/LoansListDialog'
-import CreateBorrowerDialog from 'components/dialogs/CreateBorrowerDialog'
 
 export default {
   name: 'Borrowers',
@@ -126,7 +164,9 @@ export default {
     filters: {
       institutional_id: '',
       name: '',
-      email: ''
+      email: '',
+      license: '',
+      role: ''
     },
     pagination: {
       page: 1,
@@ -138,7 +178,9 @@ export default {
       { name: 'name', label: 'Nome', field: 'name', align: 'center', classes: 'text-center'},
       { name: 'email', label: 'Email', field: 'email', align: 'center', classes: 'text-center'},
       { name: 'telephone', label: 'Telefone', field: 'telephone', align: 'center', classes: 'text-center'},
-      { name: 'activeLoan', label: 'Empréstimo Ativo', field: 'loans', align: 'center'},
+      { name: 'license', label: 'Licença', field: 'license', align: 'center'},
+      { name: 'email_verified_at', label: 'E-mail Verificado', field: 'email_verified_at', align: 'center'},
+      { name: 'role', label: 'Papel', field: 'role', align: 'center'},
       { name: 'actions', label: 'Ações', field: 'actions', align: 'center', classes: 'text-center' }
     ],
   }),
@@ -148,7 +190,7 @@ export default {
 
       const page = props?.pagination?.page ? props.pagination.page : 1
 
-      const { data } = await this.$axios.get('borrowers', { 
+      const { data } = await this.$axios.get('users', { 
         params: { 
           page,
           ...this.filters
@@ -164,30 +206,39 @@ export default {
       this.filters = {
         institutional_id: '',
         name: '',
-        email: ''
+        email: '',
+        license: '',
+        role: ''
       }
 
       this.getIndex()
     },
-    showLoansListDialog ({ loans }) {
+    async switchUserLicense (id) {
       this.$q.dialog({
-        component: LoansListDialog,
-        loans
-      }).onOk(() => {
-        this.getIndex()
+        title: 'Ativar/Desativar Usuário',
+        message: 'Você tem certeza que deseja alterar a licença deste usuário?',
+        cancel: {
+          flat: true
+        },
+        ok: {
+          label: 'Continuar',
+          flat: false
+        }
+      }).onOk(async () => {
+        try {
+          this.$q.loading.show()
+          const { data } = await this.$axios.put('user/' + id + '/switch-user-license')
+  
+          this.$q.notify({
+            type: 'positive',
+            message: data.message
+          })
+  
+          this.getIndex()
+        } finally {
+          this.$q.loading.hide()
+        }
       })
-    },
-    showCreateBorrowerDialog () {
-      this.$q.dialog({
-        component: CreateBorrowerDialog
-      }).onOk(() => {
-        this.getIndex()
-      })
-    },
-    hasActiveLoan ({ loans }) {
-      let arr = loans.filter(v => v.return_date != null)
-
-      return arr.length > 0
     }
   },
   created () {

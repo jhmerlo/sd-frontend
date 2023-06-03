@@ -154,12 +154,11 @@ export default {
         title: 'Retornar para Triagem',
         message: 'Você tem certeza que deseja retornar este computador para a etapa de triagem?',
         cancel: {
-          color: 'negative',
           flat: true
         },
         ok: {
           label: 'Continuar',
-          flat: true
+          flat: false
         }
       }).onOk(async () => {
         try {

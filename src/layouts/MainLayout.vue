@@ -82,7 +82,8 @@ export default {
       },
       {
         icon: 'groups',
-        label: 'Usuários'
+        label: 'Usuários',
+        to: { name: 'Users' }
       },
       {
         icon: 'qr_code',
@@ -102,9 +103,6 @@ export default {
       }
     ],
     profilePic: null
-  }),
-  created () {
-    console.log(this.username)
-  }
+  })
 }
 </script>
