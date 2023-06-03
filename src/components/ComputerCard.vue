@@ -105,10 +105,11 @@
     </q-card-actions>
 
     <q-dialog v-model="dialogTest">
-      <q-card class="text-center">
-        <div class="text-h6 text-primary">
+      <q-card class="bg-white">
+        <q-card-section class="text-h6 text-primary q-pb-none">
+          <q-icon name="qr_code" class="q-mr-sm" />
           QR Code
-        </div>
+        </q-card-section>
         <div>
           <canvas class="q-pa-md" id="qr-code-canvas" />
         </div>

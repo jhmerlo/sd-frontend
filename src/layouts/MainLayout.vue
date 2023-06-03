@@ -51,46 +51,52 @@ export default {
     },
     username () {
       return this.user?.name
+    },
+    dashboardLinks () {
+      let links = [
+        {
+          icon: 'dashboard',
+          label: 'Início',
+          to: { name: 'Home' }
+        },
+        {
+          icon: 'devices_other',
+          label: 'Dispositivos',
+          to: { name: 'Devices' }
+        },
+        {
+          icon: 'memory',
+          label: 'Componentes',
+          to: { name: 'Components' }
+        },
+        {
+          icon: 'list_alt',
+          label: 'Empréstimos',
+          to: { name: 'Loans' }
+        },
+        {
+          icon: 'handshake',
+          label: 'Tomadores',
+          to: { name: 'Borrowers'}
+        },
+        {
+          icon: 'qr_code',
+          label: 'QR Code',
+          to: { name: 'QRCode'}
+        }
+      ]
+
+      if (this.user.role == 'admin') {
+        links.splice(5, 0, {
+          icon: 'groups',
+          label: 'Usuários',
+          to: { name: 'Users' }
+        })
+      }
+      return links
     }
   },
   data: () => ({
-    dashboardLinks: [
-      {
-        icon: 'dashboard',
-        label: 'Início',
-        to: { name: 'Home' }
-      },
-      {
-        icon: 'devices_other',
-        label: 'Dispositivos',
-        to: { name: 'Devices' }
-      },
-      {
-        icon: 'memory',
-        label: 'Componentes',
-        to: { name: 'Components' }
-      },
-      {
-        icon: 'list_alt',
-        label: 'Empréstimos',
-        to: { name: 'Loans' }
-      },
-      {
-        icon: 'handshake',
-        label: 'Tomadores',
-        to: { name: 'Borrowers'}
-      },
-      {
-        icon: 'groups',
-        label: 'Usuários',
-        to: { name: 'Users' }
-      },
-      {
-        icon: 'qr_code',
-        label: 'QR Code',
-        to: { name: 'QRCode'}
-      }
-    ],
     profileLinks: [
       {
         icon: 'settings',

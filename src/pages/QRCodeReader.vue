@@ -1,13 +1,7 @@
 <template>
-  <q-page class="flex flex-center bg-grey-2">
+  <q-page class="bg-grey-2">
     <div>
-      <p class="error">{{ error }}</p>
-
-      <p class="decode-result">
-        Last result: <b>{{ result }}</b>
-      </p>
-
-      <qrcode-stream @decode="onDecode" @init="onInit" />
+      <qrcode-stream class="fit" style="height: 100vh !important" @decode="onDecode" @init="onInit" />
     </div>
   </q-page>
 </template>
@@ -28,7 +22,16 @@ export default {
   methods: {
     //Creating onCode method to change result state to data receiving through scanner
     onDecode(result) {
-      this.result = result;
+      if (isNaN(result)) {
+        this.$q.notify({
+          type: 'warning',
+          message: 'O valor escaneado (' + result + ') não é válido.'
+        })
+        return this.$router.push({ name: "Home" })
+      }
+
+
+      return this.$router.push({ name: "Maintenance", params: { id: result} })
     },
     // cretaing onInit method to check for error or permission or browser not supported
     async onInit(promise) {

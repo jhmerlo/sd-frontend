@@ -53,6 +53,14 @@ export default {
     },
     //Creating onCode method to change result state to data receiving through scanner
     onDecode (result) {
+      if (isNaN(result)) {
+        this.$q.notify({
+          type: 'warning',
+          message: 'O valor escaneado (' + result + ') não é válido.'
+        })
+        this.hide()
+      }
+
       this.result = result
       this.$emit('ok', result)
       this.hide()
