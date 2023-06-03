@@ -24,6 +24,9 @@
             
             <div class="text-caption row q-col-gutter-sm">
               <div class="col-12">
+                <b>Identificador:</b> #{{ loan.id }}
+              </div>
+              <div class="col-12">
                 <b>Data de Início:</b> {{ getLocaleDateString(loan.start_date) }}
               </div>
               <div class="col-12">
@@ -42,7 +45,7 @@
           </q-timeline-entry>
         </q-timeline>
         <div v-else class="text-body2">
-          Não existe nenhum empréstimo para este dispositivo.
+          Não existe nenhum empréstimo para esta consulta.
         </div>
       </q-card-section>
     </q-card>

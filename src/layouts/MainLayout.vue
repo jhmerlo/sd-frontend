@@ -76,6 +76,11 @@ export default {
         to: { name: 'Loans' }
       },
       {
+        icon: 'handshake',
+        label: 'Tomadores',
+        to: { name: 'Borrowers'}
+      },
+      {
         icon: 'groups',
         label: 'Usuários'
       },

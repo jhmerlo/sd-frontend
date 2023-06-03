@@ -98,6 +98,12 @@ const routes = [
         component: () => import('pages/Loans.vue'),
         props: true
       },
+      {
+        name: 'Borrowers',
+        path: 'tomadores-de-emprestimo',
+        component: () => import('pages/Borrowers.vue'),
+        props: true
+      },
     ]
   },
 

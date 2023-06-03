@@ -106,7 +106,7 @@
               </q-item>
               <q-item
                 @click="showReturnLoanDialog(props.row)"
-                :disable="loading"
+                :disable="loading || getStatus(props.row) == 'Liberado'"
                 class="text-center text-grey-7"
                 clickable
                 dense

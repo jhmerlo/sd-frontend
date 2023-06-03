@@ -20,6 +20,7 @@
         content-class="text-white drawer-item"
         active-color="warning"
         vertical
+        
       >
         <q-route-tab
           v-for="link in links"
