@@ -111,7 +111,6 @@ export default {
     },
   },
   created () {
-    console.log(this.commentable)
     this.comments = [ ...this.commentable.comments ]
     this.comments.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
   }

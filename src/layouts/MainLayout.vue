@@ -86,7 +86,7 @@ export default {
         }
       ]
 
-      if (this.user.role == 'admin') {
+      if (this.user?.role == 'admin') {
         links.splice(5, 0, {
           icon: 'groups',
           label: 'Usuários',

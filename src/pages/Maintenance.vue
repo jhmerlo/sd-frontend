@@ -180,7 +180,6 @@ export default {
         this.computer.user_test_histories.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
         this.computer.maintenance_histories.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
 
-        console.log(this.computer)
       } catch {
         this.$router.push({ name: 'Computers' })
       } finally {
